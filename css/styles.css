@@ -98312,12 +98312,16 @@ span.st {
     margin: 10px 50px;
     padding: 10px 20px 20px;
     font-weight: normal;
-    font-size: 130%;
+    font-size: 14px;
     overflow: hidden;
     border: 1px solid #409665;
     background: #ffffff;
     text-align: left;
 }
+.vot h2,.vot h3{
+    font-size: 130%;
+}
+
 
 h2.voice {
     text-align: center;
@@ -98379,6 +98383,9 @@ h2.toha {
     background: #ffffff;
     text-align: left;
     max-width: 1080px;
+}
+.votb p{
+    font-size: 14px;
 }
 
 /* 20230412追加 */

@@ -506,6 +506,18 @@ body#topPage .modal .city h3,
 #area-page .modal .city h3 {
   text-align: center;
   margin-bottom: 20px;
+  position: relative;
+}
+body#topPage .modal .city h3::before,
+#area-page .modal .city h3::before{
+  position: absolute;
+    content: '';
+    background: url(../img/home/target-blank.svg) no-repeat center center / contain;
+    width: 23px;
+    height: 23px;
+    left: 60%;
+    top: 50%;
+    transform: translateY(-50%) translateX(-60%);
 }
 body#topPage .modal .city .img,
 #area-page .modal .city .img {
@@ -1031,10 +1043,15 @@ body#topPage .modal.open,
 .achievements-page ul {
   list-style: none;
   margin-top: 50px;
+  
 }
-
-.achievements-page ul li a{
+.achievements-page ul li{
+  display: flex;
+  gap: 30px;
   margin-bottom: 50px;
+}
+.achievements-page ul li a{
+  /* margin-bottom: 50px; */
   display: flex;
   gap: 30px;
   align-items: flex-start;
@@ -1078,7 +1095,22 @@ body#topPage .modal.open,
 .achievements-page .pagination a {
   color: #409665;
 }
-
+.achievements-page .achievements-right .achievements-item,
+.achievements-page .achievements-right .achievements-area,
+.achievements-page .achievements-right .achievements-price{
+  margin: 0;
+}
+.achievements-page .achievements-right .achievements-item .green,
+.achievements-page .achievements-right .achievements-area .green,
+.achievements-page .achievements-right .achievements-price .green{
+  color: #409665;
+}
+.achievements-page .achievements-right .achievements-item a,
+.achievements-page .achievements-right .achievements-area a,
+.achievements-page .achievements-right .achievements-price a{
+  display: inline;
+  margin: 0!important;
+}
 @media only screen and (max-width: 1080px) {
   .achievements-page {
     padding: 0 5%;
@@ -1095,10 +1127,17 @@ body#topPage .modal.open,
     margin: 30px 0 0;
     padding: 0;
   }
+  .achievements-page ul li{
+    flex-wrap: wrap;
+    gap: 20px;
+  }
 
   .achievements-page ul li a{
     flex-wrap: wrap;
     gap: 20px;
+  }
+  .achievements-page .achievements-right{
+    width: 100%;
   }
 }
 

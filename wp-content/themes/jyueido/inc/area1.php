@@ -218,7 +218,7 @@
           href="https://jyueidou.com/areas/area/hyogo/kawanishi/">川西市</a> / <a
           href="https://jyueidou.com/areas/area/hyogo/himeji/">姫路市</a> / <a
           href="https://jyueidou.com/areas/area/hyogo/akashi/">明石市</a> / 豊岡市/加古川市/三木市/洲本市/
-        相生市/豊岡市/赤穂市/西脇市/高砂市/小野市/三田市/加西市/篠山市/養父市/丹波市/南あわじ市/朝来市/淡路市/宍粟市/加東市/たつの市/ 川辺郡猪名川町 / 多可郡多可町加古郡稲美町 / 播磨町 / 神崎郡市川町 /
+        相生市/赤穂市/西脇市/高砂市/小野市/三田市/加西市/篠山市/養父市/丹波市/南あわじ市/朝来市/淡路市/宍粟市/加東市/たつの市/ 川辺郡猪名川町 / 多可郡多可町加古郡稲美町 / 播磨町 / 神崎郡市川町 /
         福崎町 / 神河町 / 揖保郡太子町 / 赤穂郡上郡町 / 佐用郡佐用町 / 美方郡香美町 / 新温泉町</p>
     </div>
   </div>
@@ -261,24 +261,7 @@
           <img src="<?php echo $site_url; ?>/img/home/osaka.png" alt="">
         </div>
       </a>
-      <p>大阪市都島区 / 福島区 / 此花区 / 港区 / 大正区 / 天王寺区 / 浪速区 / 西淀川区 / 東淀川区 / 東成区 / 生野区 / 旭区 / 城東区 / 阿倍野区 / 住吉区 / 東住吉区 / 西成区 / 淀川区
-        / 鶴見区 / 住之江区 / 平野区 / 北区 / 中央区 / <a href="https://jyueidou.com/areas/osaka/toyonaka/">豊中市</a> / <a
-          href="https://jyueidou.com/areas/osaka/ikeda/">池田市</a> / <a
-          href="https://jyueidou.com/areas/osaka/minoh/">箕面市</a> / <a href="https://jyueidou.com/areas/osaka/sakai/"> /
-          堺市堺区 / 中区 / 東区 / 西区 / 南区 / 北区 / 美原区 / </a><a href="https://jyueidou.com/areas/osaka/kishiwada/">岸和田市</a> / <a
-          href="https://jyueidou.com/areas/osaka/suita/">吹田市</a> / <a
-          href="https://jyueidou.com/areas/osaka/izumiotsu/">泉大津市</a> / <a
-          href="https://jyueidou.com/areas/osaka/takatsuki/">高槻市</a> / 貝塚市 / 守口市 / <a
-          href="https://jyueidou.com/areas/osaka/hirakata/">枚方市</a> / <a
-          href="https://jyueidou.com/areas/osaka/ibaraki/">茨木市</a> / <a
-          href="https://jyueidou.com/areas/osaka/yao/">八尾市</a> / 泉佐野市 / <a
-          href="https://jyueidou.com/areas/osaka/tondabayashi/">富田林市</a> / <a
-          href="https://jyueidou.com/areas/osaka/neyagawa/">寝屋川市</a> / 河内長野市 / 松原市 / 大東市 / 和泉市 / <a
-          href="https://jyueidou.com/areas/osaka/kashiwara/">柏原市</a> / 羽曳野市 / 門真市 / 摂津市 / <a
-          href="https://jyueidou.com/areas/osaka/takaishi/">高石市</a> / <a
-          href="https://jyueidou.com/areas/osaka/fujiidera/">藤井寺市</a> / <a
-          href="https://jyueidou.com/areas/osaka/higashiosaka/">東大阪市</a> / 泉南市 / 四條畷市 / 交野市 / 大阪狭山市 / 阪南市 / 三島郡島本町 /
-        豊能郡豊能町 / 能勢町 / 泉北郡忠岡町 / 泉南郡熊取町 / 田尻町 / 岬町 / 南河内郡太子町 / 河南町千早赤阪村</p>
+      <p>大阪市都島区/福島区/此花区/港区/大正区/天王寺区/浪速区/西淀川区/東淀川区/東成区/生野区/旭区/城東区/阿倍野区/住吉区/東住吉区/西成区/淀川区/鶴見区/住之江区/平野区/北区/中央区/<a href="https://jyueidou.com/areas/osaka/toyonaka/">豊中市</a>/<a href="https://jyueidou.com/areas/osaka/ikeda/">池田市</a>/<a href="https://jyueidou.com/areas/osaka/minoh/">箕面市</a><a href="https://jyueidou.com/areas/osaka/sakai/">/堺市堺区/中区/東区/西区/南区/北区/美原区/</a><a href="https://jyueidou.com/areas/osaka/kishiwada/">岸和田市</a>/<a href="https://jyueidou.com/areas/osaka/suita/">吹田市</a>/<a href="https://jyueidou.com/areas/osaka/izumiotsu/">泉大津市</a>/<a href="https://jyueidou.com/areas/osaka/takatsuki/">高槻市</a>/<a href="https://jyueidou.com/areas/osaka/kaizuka/">貝塚市</a>/<a href="https://jyueidou.com/areas/osaka/moriguchi/">守口市</a>/<a href="https://jyueidou.com/areas/osaka/hirakata/">枚方市/</a><a href="https://jyueidou.com/areas/osaka/ibaraki/">茨木市</a>/<a href="https://jyueidou.com/areas/osaka/yao/">八尾市</a>/<a href="https://jyueidou.com/areas/osaka/izumisano/">泉佐野市</a>/<a href="https://jyueidou.com/areas/osaka/tondabayashi/">富田林市</a>/<a href="https://jyueidou.com/areas/osaka/neyagawa/">寝屋川市</a>/<a href="https://jyueidou.com/areas/osaka/kawachinagano/">河内長野市</a>/<a href="https://jyueidou.com/areas/osaka/matsubara/">松原市</a>/<a href="https://jyueidou.com/areas/osaka/daito/">大東市</a>/<a href="https://jyueidou.com/areas/osaka/izumi/">和泉市</a>/<a href="https://jyueidou.com/areas/osaka/kashiwara/">柏原市</a>/<a href="https://jyueidou.com/areas/osaka/habikino/">羽曳野市</a>/<a href="https://jyueidou.com/areas/osaka/kadoma/">門真市</a>/<a href="https://jyueidou.com/areas/osaka/settsu/">摂津市</a>/<a href="https://jyueidou.com/areas/osaka/takaishi/">高石市</a>/<a href="https://jyueidou.com/areas/osaka/fujiidera/">藤井寺市</a>/<a href="https://jyueidou.com/areas/osaka/higashiosaka/">東大阪市</a>/<a href="https://jyueidou.com/areas/osaka/sennan/">泉南市</a>/<a href="https://jyueidou.com/areas/osaka/shijonawate/">四條畷市</a>/<a href="https://jyueidou.com/areas/osaka/katano/">交野市</a>/<a href="https://jyueidou.com/areas/osaka/osakasayama/">大阪狭山市</a>/<a href="https://jyueidou.com/areas/osaka/hannan/">阪南市</a>/三島郡島本町/豊能郡豊能町/能勢町/泉北郡忠岡町/泉南郡熊取町/田尻町/岬町/南河内郡太子町/河南町千早赤阪村</p>
     </div>
   </div>
   <div class="modal" id="js-modal-12">
