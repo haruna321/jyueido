@@ -1,0 +1,953 @@
+@charset "UTF-8";
+.global-nav-pc {
+  margin-top: 118px;
+}
+
+#contact-area #red-btn {
+  background-color: #8c3b42;
+}
+
+#footer-area #red-btn {
+  background-color: #8c3b42;
+}
+
+#kaitori {
+  background: url(../img/items/bg.png) no-repeat center center/cover;
+  margin-bottom: 90px;
+}
+#kaitori h3 {
+  padding: 80px 0 0;
+  margin: 0;
+  font-size: 28px;
+  text-align: center;
+  font-family: '游明朝', YuMincho, 'ヒラギノ明朝 ProN W3',
+    'Hiragino Mincho ProN', 'IPAex明朝', 'ＭＳ Ｐ明朝', 'ＭＳ 明朝', serif !important;
+}
+#kaitori .p-t {
+  padding-top: 60px !important;
+}
+#kaitori .box-item {
+  background-color: transparent;
+  box-shadow: none;
+  margin-bottom: 30px;
+}
+#kaitori .box-item img {
+  border-radius: 7px;
+}
+#kaitori .box-item .item-desc {
+  border-top: 1px solid #333;
+  padding-top: 10px;
+  display: block;
+}
+
+@media screen and (max-width: 767px) {
+  #kaitori {
+    margin-bottom: 50px;
+  }
+  #kaitori h3 {
+    font-size: 20px;
+    padding: 40px 0 0;
+  }
+  #kaitori .p-t {
+    padding-top: 30px !important;
+  }
+  #kaitori .box-item {
+    margin-bottom: 10px;
+  }
+  #kaitori .box-item .item-desc {
+    margin: 0;
+  }
+  #kaitori .box-items-container [class^='col-xs-'] {
+    padding: 0;
+  }
+}
+body#topPage #irai-btn {
+  font-size: 24px;
+  background-color: #8c3b42;
+  max-width: 600px;
+  width: 90%;
+  background-image: none;
+  padding: 23px 10px;
+  border: 3px solid #8c3b42;
+  margin: 20px auto 60px;
+  transition: all 0.6s;
+}
+body#topPage #irai-btn:hover {
+  background-color: #fff;
+  color: #8c3b42;
+  transition: all 0.6s;
+}
+body#topPage #reason-btn {
+  font-size: 24px;
+  background-color: #fff;
+  color: #8c3b42;
+  border: 3px solid #8c3b42;
+  max-width: 600px;
+  width: 90%;
+  background-image: none;
+  padding: 23px 10px;
+  margin: 80px auto;
+  transition: all 0.6s;
+}
+body#topPage #reason-btn:hover {
+  background-color: #8c3b42;
+  color: #fff;
+  transition: all 0.6s;
+}
+body#topPage #antique-about {
+  color: #fff;
+  font-family: '游明朝', YuMincho, 'ヒラギノ明朝 ProN W3',
+    'Hiragino Mincho ProN', 'IPAex明朝', 'ＭＳ Ｐ明朝', 'ＭＳ 明朝', serif !important;
+  background: url(../img/home/bk01.jpg) no-repeat center center/cover;
+  padding: 100px 10px;
+  text-align: center;
+  text-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+}
+body#topPage #antique-about h2 {
+  font-size: 30px;
+}
+body#topPage #antique-about p {
+  font-size: 16px;
+  margin-top: 30px;
+}
+body#topPage #kaitori {
+  background: url(../img/home/bk02.png) no-repeat center center/cover;
+  padding: 50px 0 0;
+  margin-bottom: 0;
+}
+body#topPage #kaitori .box-items-container {
+  margin-top: 60px;
+}
+body#topPage #kaitori .box-items-container .box-item {
+  background-color: transparent;
+  margin-bottom: 0;
+}
+body#topPage #kaitori .box-items-container .box-item .item-title {
+  padding-bottom: 10px;
+}
+body#topPage #kaitori-btn {
+  margin: 60px auto 40px;
+  font-size: 24px;
+  background-color: #fff;
+  color: #8c3b42;
+  border: 3px solid #8c3b42;
+  max-width: 600px;
+  width: 90%;
+  background-image: none;
+  padding: 23px 10px;
+  margin: 80px auto;
+  transition: all 0.6s;
+}
+body#topPage #kaitori-btn:hover {
+  background-color: #8c3b42;
+  color: #fff;
+  transition: all 0.6s;
+}
+body#topPage #voice {
+  background-color: #eceae8 !important;
+  background-image: none;
+}
+body#topPage #voice .row {
+  background: url(../img/home/bk03.jpg) no-repeat center center/cover;
+  margin-bottom: 60px;
+}
+body#topPage #price {
+  padding: 100px 0 50px;
+}
+body#topPage #price .row {
+  margin-top: 50px;
+}
+body#topPage #price .row img {
+  border-radius: 10px;
+}
+body#topPage #price .row #title {
+  border-radius: 0 0 10px 10px;
+  background-color: #deb887;
+  text-align: center;
+  margin-top: -30px;
+  position: relative;
+  z-index: 1;
+}
+body#topPage #price .row #market-price {
+  text-align: center;
+  margin-top: 10px;
+}
+body#topPage #price .row #market-price #black {
+  color: #333 !important;
+}
+body#topPage #price .row #market-price #red {
+  color: #d05448 !important;
+}
+body#topPage #price .row #market-price #small {
+  font-size: 14px;
+}
+body#topPage #kouka {
+  padding: 100px 0;
+}
+body#topPage #kouka #category-box {
+  max-width: 950px;
+  margin: 50px auto 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 30px 98px;
+  list-style: none;
+  padding: 0 10px;
+}
+body#topPage #kouka #category-box li {
+  width: calc(33.3333333333% - 65.3333333333px);
+}
+body#topPage #kouka #category-box li img {
+  width: 100%;
+  height: 180px;
+  -o-object-fit: cover;
+  object-fit: cover;
+}
+body#topPage #kouka #category-box li a {
+  text-decoration: none;
+}
+body#topPage #kouka #category-box li h3 {
+  color: #333;
+  font-weight: 900;
+  text-align: center;
+  padding-bottom: 10px;
+  border-bottom: 1px solid #333;
+}
+body#topPage #kouka #category-box li p {
+  font-size: 13px;
+  color: #333;
+}
+body#topPage #kouka #kouka-btn {
+  display: block;
+  font-size: 24px;
+  background-color: #fff;
+  color: #8c3b42;
+  border: 3px solid #8c3b42;
+  max-width: 600px;
+  width: 90%;
+  background-image: none;
+  padding: 23px 10px;
+  margin: 50px auto 0;
+  transition: all 0.6s;
+  text-align: center;
+  text-decoration: none;
+}
+body#topPage #kouka #kouka-btn:hover {
+  background-color: #8c3b42;
+  color: #fff;
+}
+body#topPage #soudan {
+  margin-bottom: 100px;
+}
+body#topPage #soudan .box-balloon-1::before,
+body#topPage #soudan .box-balloon-1::after {
+  display: none;
+}
+body#topPage #contact-box #red-btn {
+  background-color: #8c3b42;
+  background-image: none !important;
+}
+body#topPage #arrow-img {
+  margin-top: 50px;
+}
+body#topPage #flow {
+  margin-bottom: 80px;
+}
+body#topPage #flow #red-btn {
+  display: block;
+  font-size: 24px;
+  background-color: #fff;
+  color: #8c3b42;
+  border: 3px solid #8c3b42;
+  max-width: 600px;
+  width: 90%;
+  background-image: none;
+  padding: 23px 10px;
+  margin: 50px auto 0;
+  transition: all 0.6s;
+  text-align: center;
+  text-decoration: none;
+}
+body#topPage #flow #red-btn:hover {
+  background-color: #8c3b42;
+  color: #fff;
+}
+body#topPage #area, #area-page .bg{
+  background-color: #ebe8db;
+  padding: 80px 0;
+  font-family: '游明朝', YuMincho, 'ヒラギノ明朝 ProN W3',
+    'Hiragino Mincho ProN', 'IPAex明朝', 'ＭＳ Ｐ明朝', 'ＭＳ 明朝', serif;
+}
+body#topPage #area .trip {
+  background-color: #fff;
+  padding: 50px 70px 40px;
+  max-width: 1090px;
+  box-sizing: border-box;
+  margin: 0 auto;
+}
+body#topPage #area .trip h2 {
+  text-align: center;
+  font-weight: 900;
+}
+body#topPage #area .trip .box,#area-page .box {
+  position: relative;
+}
+body#topPage #area .trip .box p ,#area-page .box p{
+  width: 548px;
+  font-size: 18px;
+  font-family: 'Noto Sans JP', 'Hiragino Kaku Gothic ProN', Meiryo, sans-serif;
+  margin-top: 50px;
+  text-align: left;
+}
+body#topPage #area .trip .box p span ,#area-page .box p span{
+  font-weight: 900;
+  color: #8c3b42;
+}
+body#topPage #area .trip .box img ,#area-page .box img{
+  width: 330px;
+  position: absolute;
+  top: -20px;
+  right: 0;
+}
+body#topPage #area .purchase ,#area-page .purchase{
+  background-color: #fff;
+  padding: 60px 70px 60px;
+  max-width: 1090px;
+  box-sizing: border-box;
+  margin: 60px auto 0;
+}
+body#topPage #area .purchase h2 ,#area-page .purchase h2{
+  text-align: center;
+  font-weight: 900;
+}
+body#topPage #area .purchase p ,#area-page .purchase p{
+  font-size: 18px;
+  font-family: 'Noto Sans JP', 'Hiragino Kaku Gothic ProN', Meiryo, sans-serif;
+  text-align: center;
+  margin-top: 30px;
+}
+body#topPage #area .purchase .map ,#area-page .purchase .map{
+  position: relative;
+  padding-bottom: 84px;
+}
+body#topPage #area .purchase .map img ,#area-page .purchase .map img{
+  width: 100%;
+}
+body#topPage #area .purchase .map .sp-only ,#area-page .purchase .map .sp-only{
+  display: none;
+}
+body#topPage #area .purchase .map ul ,#area-page .purchase .map ul{
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+body#topPage #area .purchase .map ul li ,#area-page .purchase .map ul li{
+  width: 160px;
+  background-color: #fff;
+  border: 1px solid #8c3b42;
+  color: #8c3b42;
+  font-size: 16px;
+  padding: 5px 0 5px 20px;
+  box-sizing: border-box;
+  line-height: 1;
+  margin-bottom: 10px;
+  position: relative;
+  cursor: pointer;
+  transition: all 0.6s;
+}
+body#topPage #area .purchase .map ul li:hover ,#area-page .purchase .map ul li:hover{
+  transition: all 0.6s;
+  opacity: 0.6;
+}
+body#topPage #area .purchase .map ul li::before ,#area-page .purchase .map ul li::before{
+  position: absolute;
+  content: '';
+  background: url(../img/home/purchase-arrow.svg) no-repeat center
+    center/contain;
+  width: 18px;
+  height: 18px;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+}
+body#topPage #area .purchase .map ul li:last-child ,#area-page .purchase .map ul li:last-child{
+  margin-bottom: 0;
+}
+body#topPage #area .purchase .map .chugoku ,#area-page .purchase .map .chugoku{
+  position: absolute;
+  top: 184px;
+  left: 0;
+}
+body#topPage #area .purchase .map .chubu ,#area-page .purchase .map .chubu{
+  position: absolute;
+  top: 144px;
+  left: 394px;
+}
+body#topPage #area .purchase .map .shikoku ,#area-page .purchase .map .shikoku{
+  position: absolute;
+  bottom: 8px;
+  left: 276px;
+}
+body#topPage #area .purchase .map .kinki ,#area-page .purchase .map .kinki{
+  width: 330px;
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  position: absolute;
+  bottom: 5px;
+  right: 0;
+}
+body#topPage #area .nationwide ,#area-page .nationwide{
+  background-color: #fff;
+  padding: 60px 70px;
+  max-width: 1090px;
+  box-sizing: border-box;
+  margin: 60px auto 0;
+}
+body#topPage #area .nationwide h2 ,#area-page .nationwide h2{
+  text-align: center;
+  font-weight: 900;
+}
+body#topPage #area .nationwide h3 ,#area-page .nationwide h3{
+  font-size: 18px;
+  font-weight: 900;
+  font-family: 'Noto Sans JP', 'Hiragino Kaku Gothic ProN', Meiryo, sans-serif;
+  color: #8c3b42;
+}
+body#topPage #area .nationwide ul ,#area-page .nationwide ul{
+  list-style: none;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 25px;
+  padding: 0;
+  margin: 0;
+}
+body#topPage #area .nationwide ul li a ,#area-page .nationwide ul li a{
+  color: #333;
+  padding-right: 40px;
+  position: relative;
+}
+body#topPage #area .nationwide ul li a::before ,#area-page .nationwide ul li a:before{
+  position: absolute;
+  content: '';
+  background: url(../img/home/target-blank.svg) no-repeat center center/contain;
+  width: 23px;
+  height: 23px;
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%);
+}
+body#topPage #area .nationwide ul li a::after ,#area-page .nationwide ul li a::after{
+  position: absolute;
+  content: '';
+  width: 1px;
+  height: 16px;
+  background-color: #333;
+  top: 0;
+  right: 31px;
+}
+body#topPage .home-main-container-sp {
+  margin-top: 50px;
+}
+body#topPage .modal ,#area-page .modal{
+  max-width: 1090px;
+  width: 90%;
+  height: 60%;
+  border-radius: 20px;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: #fff;
+  display: none;
+}
+body#topPage .modal a ,#area-page .modal a{
+  color: #333;
+  text-decoration: none;
+}
+body#topPage .modal .city ,#area-page .modal .city{
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 10;
+  font-size: 14px;
+  width: 80%;
+}
+body#topPage .modal .city h3 ,#area-page .modal .city h3{
+  text-align: center;
+  margin-bottom: 20px;
+}
+body#topPage .modal .city .img ,#area-page .modal .city .img{
+  display: block;
+  width: 200px;
+  margin: 0 auto;
+  position: relative;
+}
+body#topPage .modal .city .img img ,#area-page .modal .city .img img{
+  width: 100%;
+}
+body#topPage .modal .city .img::before ,#area-page .modal .city .img::before{
+  content: '';
+  background: url(../img/common/link.svg) no-repeat center center/contain;
+  width: 20px;
+  height: 20px;
+  position: absolute;
+  bottom: 20px;
+  right: -15px;
+}
+body#topPage .modal .city p ,#area-page .modal .city p{
+  text-align: left !important;
+  margin: 20px 0 0 !important;
+  font-size: 14px !important;
+}
+body#topPage .modal .city p a ,#area-page .modal .city p a{
+  color: #333;
+  font-weight: bold;
+  text-decoration: underline !important;
+}
+body#topPage .modal-close__wrap ,#area-page .modal-close__wrap{
+  position: absolute;
+  right: 40px;
+  top: 20px;
+}
+body#topPage .modal-close ,#area-page .modal-close{
+  background: transparent;
+  border-color: transparent;
+  padding: 0;
+  margin: 0;
+  cursor: pointer;
+  width: 28px;
+  display: block;
+  height: 28px;
+}
+body#topPage .modal-close span ,#area-page .modal-close span{
+  position: relative;
+  width: 100%;
+  height: 1px;
+  background: black;
+  display: block;
+}
+body#topPage .modal-close span:nth-child(1) ,#area-page .modal-close span:nth-child(1){
+  transform: rotate(45deg);
+}
+body#topPage .modal-close span:nth-child(2) ,#area-page .modal-close span:nth-child(2){
+  transform: rotate(-45deg);
+}
+body#topPage .overlay ,#area-page .overlay{
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  background: #000;
+  opacity: 0.2;
+  z-index: 999;
+  top: 0;
+  left: 0;
+  right: 0;
+  display: none;
+}
+body#topPage .overlay.open ,#area-page .overlay.open{
+  display: block;
+}
+body#topPage .modal.open ,#area-page .modal.open{
+  display: block;
+}
+#area-page .area-btn{
+  margin-top: 50px;
+  display: flex;
+  gap: 20px;
+  justify-content: center;
+  list-style: none;
+  padding: 0;
+}
+#area-page .area-btn li{
+  width: calc(100% / 2 - 10px);
+  max-width: 280px;
+}
+#area-page .area-btn li a{
+  display: block;
+  background-color: #8C3B42;
+  color: #fff;
+  text-align: center;
+  padding: 10px 0;
+  border-radius: 7px;
+  transition: all 0.6s;
+  text-decoration: none;
+}
+#area-page .area-btn li a:hover{
+  transition: all 0.6s;
+  opacity: 0.6;
+}
+
+@media only screen and (max-width: 1090px) {
+  #area-page .bg .container{
+    padding: 0;
+  }
+  body#topPage #area ,#area-page .bg{
+    padding: 50px 5%;
+  }
+  body#topPage #area .trip {
+    padding: 30px 5%;
+  }
+  body#topPage #area .trip h2 ,#area-page h2{
+    font-size: 20px !important;
+  }
+  body#topPage #area .trip .box ,#area-page .box{
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 30px;
+    margin: 30px auto 0;
+  }
+  body#topPage #area .trip .box p ,#area-page .box p{
+    width: 100%;
+    font-size: 14px;
+    order: 2;
+    margin: 0 !important;
+  }
+  body#topPage #area .trip .box img ,#area-page .box img{
+    position: static;
+    top: auto;
+    right: auto;
+    order: 1;
+    max-width: 330px;
+    width: 100%;
+  }
+  body#topPage #area .purchase {
+    padding: 30px 5%;
+  }
+  #area-page .purchase{
+    padding: 30px 5%;
+    margin: 0;
+  }
+  body#topPage #area .purchase h2 ,#area-page .purchase h2{
+    font-size: 20px !important;
+  }
+  body#topPage #area .purchase p ,#area-page .purchase p{
+    font-size: 14px;
+  }
+  body#topPage #area .purchase .map ,#area-page .purchase .map{
+    position: relative;
+    padding-bottom: 0;
+  }
+  body#topPage #area .purchase .map .pc-only ,#area-page .purchase .map .pc-only{
+    display: none;
+  }
+  body#topPage #area .purchase .map .sp-only ,#area-page .purchase .map .sp-only{
+    display: block;
+  }
+  body#topPage #area .purchase .map img ,#area-page .purchase .map img{
+    display: block;
+    margin: 30px auto;
+  }
+  body#topPage #area .purchase .map h3 ,#area-page .purchase .map h3{
+    background-color: #8c3b42;
+    color: #fff;
+    padding: 7px 15px;
+    width: 100%;
+    box-sizing: border-box;
+    font-size: 16px;
+  }
+  body#topPage #area .purchase .map ul ,#area-page .purchase .map ul{
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    align-items: flex-start;
+    margin-top: 10px;
+  }
+  body#topPage #area .purchase .map ul li ,#area-page .purchase .map ul li{
+    width: calc(50% - 5px);
+    margin: 0;
+  }
+  body#topPage #area .purchase .map .chugoku,
+  body#topPage #area .purchase .map .chubu,
+  body#topPage #area .purchase .map .shikoku,
+  body#topPage #area .purchase .map .kinki 
+  ,#area-page .purchase .map .chugoku
+  ,#area-page .purchase .map .chubu
+  ,#area-page .purchase .map .shikoku
+  ,#area-page .purchase .map .kinki{
+    position: static;
+    top: auto;
+    left: auto;
+    bottom: auto;
+    right: auto;
+  }
+  body#topPage #area .purchase .map .kinki ,#area-page .purchase .map .kinki{
+    width: 100%;
+  }
+  body#topPage #area .nationwide ,#area-page .nationwide{
+    padding: 30px 5%;
+  }
+  body#topPage #area .nationwide h2 {
+    font-size: 20px !important;
+  }
+  body#topPage #area .nationwide ul {
+    gap: 10px 25px;
+  }
+  body#topPage #area .nationwide ul li a {
+    padding-right: 35px;
+  }
+  body#topPage #area .nationwide ul li a::before {
+    width: 18px;
+    height: 18px;
+  }
+  body#topPage #area .nationwide ul li a::after {
+    right: 27px;
+  }
+}
+@media only screen and (max-width: 991px) {
+  body#topPage .home-main-container-2 {
+    margin-top: 50px;
+  }
+}
+@media only screen and (max-width: 767px) {
+  body#topPage #irai-btn,
+  body#topPage #reason-btn,
+  body#topPage #kaitori-btn {
+    font-size: 16px;
+    padding: 10px;
+    margin: 10px auto 30px;
+  }
+  body#topPage #antique-about {
+    padding: 50px 10%;
+  }
+  body#topPage #antique-about h2 {
+    font-size: 24px;
+  }
+  body#topPage #antique-about p {
+    font-size: 14px;
+    text-align: left !important;
+  }
+  body#topPage #kaitori-btn {
+    margin: 30px auto;
+  }
+  body#topPage #price {
+    padding: 50px 0;
+  }
+  body#topPage #kouka {
+    padding: 50px 0 0;
+  }
+  body#topPage #kouka #category-box {
+    gap: 30px 20px;
+    padding: 0 10%;
+    margin-top: 30px;
+  }
+  body#topPage #kouka #category-box li {
+    width: calc(50% - 10px);
+  }
+  body#topPage #kouka #category-box li img {
+    height: auto;
+  }
+  body#topPage #kouka #category-box li h3 {
+    margin-top: 10px;
+  }
+  body#topPage #kouka #category-box li p {
+    margin-bottom: 0;
+  }
+  body#topPage #kouka #kouka-btn {
+    font-size: 16px;
+    padding: 10px;
+    margin: 30px auto 30px;
+  }
+  body#topPage #soudan {
+    padding: 0 5%;
+    margin: 0;
+  }
+  body#topPage #flow {
+    margin-bottom: 0;
+  }
+  body#topPage #flow #red-btn {
+    font-size: 16px;
+    padding: 10px;
+    margin: 30px auto;
+  }
+  body#topPage .modal {
+    height: 90%;
+  }
+} /*# sourceMappingURL=style.css.map */
+
+#sakka-wrap {
+  background: url(../img/sakka/bg.png) no-repeat center center/cover;
+  margin: 0 !important;
+  padding: 100px 0 180px;
+  width: 100%;
+}
+#sakka-wrap .inner {
+  max-width: 950px;
+  width: 95%;
+  margin: 0 auto;
+}
+#sakka-wrap .g-b-30 {
+  margin: 0 !important;
+}
+#sakka-wrap .border-b-1 {
+  border: none !important;
+}
+#artists-wrap ul {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 50px 80px;
+  list-style: none;
+  padding: 0;
+}
+#artists-wrap ul li {
+  width: 250px;
+}
+#artists-wrap ul li img {
+  width: 100%;
+  aspect-ratio: 250 / 180;
+  object-fit: cover;
+}
+#artists-wrap ul li a {
+  color: #333;
+  font-family: '游明朝', YuMincho, 'ヒラギノ明朝 ProN W3',
+    'Hiragino Mincho ProN', 'IPAex明朝', 'ＭＳ Ｐ明朝', 'ＭＳ 明朝', serif !important;
+  line-height: 1;
+  text-decoration: none;
+  display: block;
+}
+#artists-wrap ul li h3 {
+  font-size: 16px;
+  font-weight: bold;
+  text-align: center;
+  margin: 20px 0;
+}
+#artists-wrap ul li p {
+  font-size: 13px;
+  line-height: 1.3;
+  padding: 10px 0 0;
+  border-top: 1px solid #333;
+  margin: 0;
+}
+#single-artists-page .box-a {
+  margin-bottom: 0 !important;
+  position: relative;
+}
+#single-artists-page .box-a::before{
+  position: absolute;
+  content: "";
+  bottom: -10px;
+  left: 4%;
+  width: 92%;
+  height: 30px;
+  background: url(../img/sakka/line.png) repeat-x center center/contain;
+}
+#single-artists-page .box-a:last-child::before{
+  display: none;
+}
+#single-artists-page h2{
+  position: relative;
+}
+#single-artists-page h2::before{
+  position: absolute;
+  content: "";
+  bottom: -10px;
+  left: 0;
+  width: 85px;
+  height: 1px;
+  background-color: #8C3B42;
+}
+#single-artists-page .g-b{
+  margin-bottom: 30px!important;
+}
+#single-artists-page .btn-cv{
+  margin-bottom: 100px;
+}
+@media only screen and (max-width: 991px) {
+  #artist-page .title-main-container {
+    margin-top: 50px;
+  }
+  #single-artists-page .title-main-container {
+    margin-top: 40px;
+  }
+}
+@media only screen and (max-width: 767px) {
+  #sakka-wrap {
+    padding: 50px 0 80px;
+  }
+
+  #artists-wrap ul {
+    justify-content: flex-start;
+    gap: 30px 6%;
+  }
+  #artists-wrap ul li {
+    width: 47%;
+  }
+  #artists-wrap ul li h3 {
+    font-size: 14px;
+    margin: 10px 0;
+  }
+}
+.p-categoryWrap{
+  padding-top: 80px;
+}
+.p-itemCategory{
+  display: flex;
+  flex-wrap: wrap;
+  gap: 15px 25px;
+  list-style: none;
+  margin-bottom: 80px;
+  padding: 0;
+}
+.p-itemCategory li{
+  width: calc(100% / 3 - 50px / 3);
+}
+.p-itemCategory li::marker{
+  display: none;
+}
+.p-itemCategory li a{
+  display: block;
+  border-radius: 5px;
+  border: 1px solid #8C3B42;
+  background-color: #8C3B42;
+  color: #fff;
+  align-items: center;
+  padding: 10px 0;
+  transition: all 0.6s;
+  text-align: center;
+  font-size: 16px;
+  text-decoration: none;
+  position: relative;
+}
+.p-itemCategory li a::before{
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  right: 14px;
+  width: 18px;
+  height: 18px;
+  content: "";
+  background: url(../img/common/arrow-white.svg) no-repeat center center/contain;
+}
+.p-itemCategory li a:hover{
+  background-color: #fff;
+  color: #8C3B42;
+  transition: all 0.6s;
+}
+.p-itemCategory li a:hover::before {
+  background: url(../img/common/arrow-red.svg) no-repeat center center/contain;
+}
+@media only screen and (max-width: 767px) {
+  .p-categoryWrap{
+    padding-top: 50px;
+  }
+  .p-itemCategory{
+    gap: 10px;
+    margin-bottom: 50px;
+  }
+
+  .p-itemCategory li{
+    width: calc(100% / 2 - 10px / 2);
+  }
+  .p-itemCategory li a{
+    padding: 7px 0;
+    font-size: 12px;
+  }
+  .p-itemCategory li a::before{
+    right: 10px;
+    width: 12px;
+    height: 12px;
+
+  }
+}
