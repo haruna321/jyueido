@@ -13,29 +13,40 @@
   <div class="container">
     <a href="/contact/#form_box">
       <div class="home-reasons-1 add_mtb20">
-        <img src="./img/home/r_t_1.png" class="img-responsive home-reasons-1-1" alt="相談・鑑定・出張・査定 無料対応" width="650" height="88">
-        <img src="./img/home/r_t_2.png" class="img-responsive home-reasons-1-2" alt="年間1,000件以上のご依頼、" width="508" height="80">
-        <img src="./img/home/r_t_3.png" class="img-responsive home-reasons-1-3" alt="50,000点以上の買受実績" width="486" height="80">
+        <img src="./img/home/r_t_1.png" class="img-responsive home-reasons-1-1" alt="相談・鑑定・出張・査定 無料対応" width="650"
+          height="88">
+        <img src="./img/home/r_t_2.png" class="img-responsive home-reasons-1-2" alt="年間1,000件以上のご依頼、" width="508"
+          height="80">
+        <img src="./img/home/r_t_3.png" class="img-responsive home-reasons-1-3" alt="50,000点以上の買受実績" width="486"
+          height="80">
       </div>
     </a>
 
-    <div class="btn-container-1 add_mtb20">
-      <a href="./contact/#form_box" class="btn-1-extended btn-arrow-circle-1" id="irai-btn"><b>今すぐ無料査定を依頼する</b></a>
+    <div class="top-btn-area">
+      <a class="top-btn-area__mail" href="https://jyueidou.com/contact/#form_box">メールで無料査定</a>
+      <a class="top-btn-area__tel" href="tel:0120-13-6767">電話で無料査定</a>
+      <a class="top-btn-area__line" href="https://lin.ee/NlNE9Ia">LINEで無料査定</a>
     </div>
 
     <div class="home-reasons-2 p-t-1 g-b add_mb0">
       <h2 class="title-1 add_mtb40">寿永堂が選ばれる理由</h2>
       <div class="home-reasons-2-boxes bg-tx-5 g-b">
         <div class="row g-0 g-xs-l--20 g-xs-r--20 text-center">
-          <div class="col-xs-4 p-xs-l-5 p-xs-r-5"><img src="./img/home/r_b_1.png" class="img-responsive g-t--30 g-b--30" alt="信用" width="212" height="178"></div>
-          <div class="col-xs-4 p-xs-l-5 p-xs-r-5"><img src="./img/home/r_b_2.png" class="img-responsive g-t--30 g-b--30" alt="実績" width="212" height="178"></div>
-          <div class="col-xs-4 p-xs-l-5 p-xs-r-5"><img src="./img/home/r_b_3.png" class="img-responsive g-t--30 g-b--30" alt="高価買取" width="212" height="178"></div>
+          <div class="col-xs-4 p-xs-l-5 p-xs-r-5"><img src="./img/home/r_b_1.png" class="img-responsive g-t--30 g-b--30"
+              alt="信用" width="212" height="178"></div>
+          <div class="col-xs-4 p-xs-l-5 p-xs-r-5"><img src="./img/home/r_b_2.png" class="img-responsive g-t--30 g-b--30"
+              alt="実績" width="212" height="178"></div>
+          <div class="col-xs-4 p-xs-l-5 p-xs-r-5"><img src="./img/home/r_b_3.png" class="img-responsive g-t--30 g-b--30"
+              alt="高価買取" width="212" height="178"></div>
         </div>
       </div>
       <div class="fz-15 fz-xs-14">
-        <img src="./img/common/placeholder_900x600.png" data-src="./img/home/r_i_1.jpg" class="img-responsive visible-lg pull-right drop-shadow-5 lazyload" alt="" width="300" height="200">
-        <p>寿永堂のWebサイトをご覧いただきありがとうございます。<br class="hidden-xs">当店では大阪、京都、兵庫、奈良、滋賀、和歌山などの近畿圏から日本全国におきまして<br class="hidden-xs hidden-sm">骨董品・美術品の買受をさせていただいております。</p>
-        <p>お客様の想いの詰まったお品物をお譲りいただくのは、たやすいことではありません。<br class="hidden-xs hidden-sm">お品物の真価を正しく見極め、そこに込められた想いを<br class="hidden-xs hidden-sm">大切に受け止めてもらえる譲り手に繋げる事が私達の使命であると考えております。</p>
+        <img src="./img/common/placeholder_900x600.png" data-src="./img/home/r_i_1.jpg"
+          class="img-responsive visible-lg pull-right drop-shadow-5 lazyload" alt="" width="300" height="200">
+        <p>寿永堂のWebサイトをご覧いただきありがとうございます。<br class="hidden-xs">当店では大阪、京都、兵庫、奈良、滋賀、和歌山などの近畿圏から日本全国におきまして<br
+            class="hidden-xs hidden-sm">骨董品・美術品の買受をさせていただいております。</p>
+        <p>お客様の想いの詰まったお品物をお譲りいただくのは、たやすいことではありません。<br class="hidden-xs hidden-sm">お品物の真価を正しく見極め、そこに込められた想いを<br
+            class="hidden-xs hidden-sm">大切に受け止めてもらえる譲り手に繋げる事が私達の使命であると考えております。</p>
         <p>ご縁があってご相談いただいたお客様の信頼を何より大切にしたい、<br class="hidden-xs">そんな信念の元、買取を行わせていただいております。</p>
         <p>多くの士業関係の方からも御依頼を頂いております。お気軽にご相談ください。</p>
       </div>
@@ -175,7 +186,7 @@
         'chinese/jade', // 23
         'calligraphy-tools/brush-tube', // 24
         'painting/calligraphy-and-painting', // 25
-        'chinese/chinese-hanging-scroll',
+		  'chinese/chinese-hanging-scroll',
         'chinese/chinese-picture', // 26
         'kougei/zouge', // 27
         'calligraphy-tools', // 28
@@ -200,7 +211,7 @@
         'armor/tousougu', // 47
         'armor/tousougu/tsuba', // 48
         'armor/touken/katana', // 49
-        'armor/touken',
+		  'armor/touken',
         'kougei/takezaiku', // 50
         'antique/medal', // 49
         'antique/stamp', // 50
@@ -228,24 +239,25 @@
 
       $query = new WP_Query($args);
       if ($query->have_posts()) : while ($query->have_posts()) : $query->the_post(); ?>
-          <div class="col-xs-6 col-sm-4 col-lg-3">
-            <a href="<?php the_permalink(); ?>" class="box-item link-color-font">
-              <img src="<?php echo $placeholder; ?>" data-src="<?php echo get_field('item_image')["sizes"][$thumb_size]; ?>" class="img-responsive img-hover lazyload" alt="">
-              <span class="item-title"><b><?php the_title(); ?></b></span>
-            </a>
-          </div>
+      <div class="col-xs-6 col-sm-4 col-lg-3">
+        <a href="<?php the_permalink(); ?>" class="box-item link-color-font">
+          <img src="<?php echo $placeholder; ?>" data-src="<?php echo get_field('item_image')["sizes"][$thumb_size]; ?>"
+            class="img-responsive img-hover lazyload" alt="">
+          <span class="item-title"><b><?php the_title(); ?></b></span>
+        </a>
+      </div>
 
-        <?php endwhile; ?>
+      <?php endwhile; ?>
       <?php else : // 記事が無い場合 
       ?>
-        <div class="separator-1">
-          <div class="box-7 p-20 text-center">記事はまだありません。</div>
-        </div>
+      <div class="separator-1">
+        <div class="box-7 p-20 text-center">記事はまだありません。</div>
+      </div>
       <?php endif;
       wp_reset_postdata(); // クエリのリセット 
       ?>
       <script>
-        $('.box-item').matchHeight();
+      $('.box-item').matchHeight();
       </script>
       <a href="./items/" class="btn-1-extended btn-arrow-circle-1" id="kaitori-btn"><b>その他の買取品目一覧</b></a>
     </div>
@@ -262,19 +274,22 @@
       <div class="col-xs-12 col-sm-6 g-b-50 g-xs-b-25">
         <div class="bg-0 p-30 p-xs-20 height-achievements">
           <div class="pull-right pull-xs-none w-45p w-xs-100p g-l-20 g-xs-l-0 g-b-10 g-xs-b-20">
-            <img src="./img/common/placeholder_900x600.png" data-src="./img/home/a_1.jpg" class="img-responsive lazyload" alt="">
+            <img src="./img/common/placeholder_900x600.png" data-src="./img/home/a_1.jpg"
+              class="img-responsive lazyload" alt="">
           </div>
           <p><b class="fz-18">無銘　日本刀（短刀）</b><br>
             <small>刀剣　買取</small>
           </p>
-          <p>無銘の短刀（日本刀）を買取りいたしました。寿永堂が一番良い査定をしてくれて高額査定だったとのことで、お譲りして頂きました。刀剣買取りには基本的には登録証が必要になります。登録証がない刀剣に関しては、買取りができませんので、事前にご相談ください。再登録の発行方法について、サポートさせて頂きます。
+          <p>
+            無銘の短刀（日本刀）を買取りいたしました。寿永堂が一番良い査定をしてくれて高額査定だったとのことで、お譲りして頂きました。刀剣買取りには基本的には登録証が必要になります。登録証がない刀剣に関しては、買取りができませんので、事前にご相談ください。再登録の発行方法について、サポートさせて頂きます。
           </p>
         </div>
       </div>
       <div class="col-xs-12 col-sm-6 g-b-50 g-xs-b-25">
         <div class="bg-0 p-30 p-xs-20 height-achievements">
           <div class="pull-right pull-xs-none w-45p w-xs-100p g-l-20 g-xs-l-0 g-b-10 g-xs-b-20">
-            <img src="./img/common/placeholder_900x600.png" data-src="./img/home/a_2.jpg" class="img-responsive lazyload" alt="">
+            <img src="./img/common/placeholder_900x600.png" data-src="./img/home/a_2.jpg"
+              class="img-responsive lazyload" alt="">
           </div>
           <p><b class="fz-18">三代　徳田八十吉</b><br>
             <small>陶磁器（作家物）買取</small>
@@ -287,7 +302,8 @@
       <div class="col-xs-12 col-sm-6 g-xs-b-25">
         <div class="bg-0 p-30 p-xs-20 height-achievements">
           <div class="pull-right pull-xs-none w-45p w-xs-100p g-l-20 g-xs-l-0 g-b-10 g-xs-b-20">
-            <img src="./img/common/placeholder_900x600.png" data-src="./img/home/a_003.jpg" class="img-responsive lazyload" alt="">
+            <img src="./img/common/placeholder_900x600.png" data-src="./img/home/a_003.jpg"
+              class="img-responsive lazyload" alt="">
           </div>
           <p><b class="fz-18">仇英　山水画</b><br>
             <small>中国書画　買取</small>
@@ -302,7 +318,8 @@
       <div class="col-xs-12 col-sm-6 g-xs-b-25">
         <div class="bg-0 p-30 p-xs-20 height-achievements">
           <div class="pull-right pull-xs-none w-45p w-xs-100p g-l-20 g-xs-l-0 g-b-10 g-xs-b-20">
-            <img src="./img/common/placeholder_900x600.png" data-src="./img/home/a_4.jpg" class="img-responsive lazyload" alt="">
+            <img src="./img/common/placeholder_900x600.png" data-src="./img/home/a_4.jpg"
+              class="img-responsive lazyload" alt="">
           </div>
           <p><b class="fz-18">エミール・ガレ 花瓶</b><br>
             <small>西洋・アンティーク　買取</small>
@@ -353,24 +370,32 @@
     </div>
     <div class="row">
       <div class="col-xs-12 col-sm-6 col-md-3 g-b g-xs-b-10 add_mb20">
-        <p class="g-b-10"><img src="./img/common/placeholder_900x600.png" data-src="./img/home/p_1.jpg" class="img-responsive lazyload" alt=""></p>
+        <p class="g-b-10"><img src="./img/common/placeholder_900x600.png" data-src="./img/home/p_1.jpg"
+            class="img-responsive lazyload" alt=""></p>
         <p class="g-b-0" id="title">作家物 銀瓶</p>
-        <p id="market-price"><b class="text-5" id="black">買取相場価格 <span class="fz-26" id="red">20<span id="small">万円</span></span></b></p>
+        <p id="market-price"><b class="text-5" id="black">買取相場価格 <span class="fz-26" id="red">20<span
+                id="small">万円</span></span></b></p>
       </div>
       <div class="col-xs-12 col-sm-6 col-md-3 g-b g-xs-b-10 add_mb20">
-        <p class="g-b-10"><img src="./img/common/placeholder_900x600.png" data-src="./img/home/p_2.jpg" class="img-responsive lazyload" alt=""></p>
+        <p class="g-b-10"><img src="./img/common/placeholder_900x600.png" data-src="./img/home/p_2.jpg"
+            class="img-responsive lazyload" alt=""></p>
         <p class="g-b-0" id="title">濱田庄司 四方鉢</p>
-        <p id="market-price"><b class="text-5" id="black">買取相場価格 <span class="fz-26" id="red">15<span id="small">万円</span></span></b></p>
+        <p id="market-price"><b class="text-5" id="black">買取相場価格 <span class="fz-26" id="red">15<span
+                id="small">万円</span></span></b></p>
       </div>
       <div class="col-xs-12 col-sm-6 col-md-3 g-b g-xs-b-10 add_mb20">
-        <p class="g-b-10"><img src="./img/common/placeholder_900x600.png" data-src="./img/home/p_3.jpg" class="img-responsive lazyload" alt=""></p>
+        <p class="g-b-10"><img src="./img/common/placeholder_900x600.png" data-src="./img/home/p_3.jpg"
+            class="img-responsive lazyload" alt=""></p>
         <p class="g-b-0" id="title">荻須高徳 水彩画</p>
-        <p id="market-price"><b class="text-5" id="black">買取相場価格 <span class="fz-26" id="red">80<span id="small">万円</span></span></b></p>
+        <p id="market-price"><b class="text-5" id="black">買取相場価格 <span class="fz-26" id="red">80<span
+                id="small">万円</span></span></b></p>
       </div>
       <div class="col-xs-12 col-sm-6 col-md-3 g-b g-xs-b-10 add_mb20">
-        <p class="g-b-10"><img src="./img/common/placeholder_900x600.png" data-src="./img/home/p_4.jpg" class="img-responsive lazyload" alt=""></p>
+        <p class="g-b-10"><img src="./img/common/placeholder_900x600.png" data-src="./img/home/p_4.jpg"
+            class="img-responsive lazyload" alt=""></p>
         <p class="g-b-0" id="title">呉昌碩 中国掛軸</p>
-        <p id="market-price"><b class="text-5" id="black">買取相場価格 <span class="fz-26 fz-lg-23 fz-md-16" id="red">150～500<span id="small">万円</span></span></b></p>
+        <p id="market-price"><b class="text-5" id="black">買取相場価格 <span class="fz-26 fz-lg-23 fz-md-16"
+              id="red">150～500<span id="small">万円</span></span></b></p>
       </div>
     </div>
   </div>
@@ -386,7 +411,9 @@
       <h2 class="g-b-0"><b class="text-serif fz-38 fz-xs-26 fw-400">買取・鑑定のご依頼</b></h2>
       <p class="g-b-10"><b class="fz-17 fw-500 text-6">最短即日、スピード対応！<br class="visible-xs">
           電話相談・出張鑑定も勿論無料！</b></p>
-      <p class="fz-14 text-lh-1_6">鑑定してもらうほどの価値があるのか、見てもらうほどの物なのか<br class="hidden-lg hidden-xs">プロだからお電話で聞くだけでもわかることがたくさんあります。<br class="hidden-xs">日本全国、幅広く対応していますので、まずはお気軽にお電話下さい。</p>
+      <p class="fz-14 text-lh-1_6">鑑定してもらうほどの価値があるのか、見てもらうほどの物なのか<br
+          class="hidden-lg hidden-xs">プロだからお電話で聞くだけでもわかることがたくさんあります。<br
+          class="hidden-xs">日本全国、幅広く対応していますので、まずはお気軽にお電話下さい。</p>
 
       <div class="box-tel-1 box-shadow-5 g-t-30 g-b-50 add_mb20">
         <div class="tel-texts">
@@ -420,23 +447,29 @@
     $terms = get_terms($t, $args);
     //タームを出力
     if (!empty($terms) && !is_wp_error($terms)) : ?>
-      <?php foreach ($terms as $term) : ?>
-        <li class="">
-          <div class="">
-            <a href="<?php echo get_term_link($term->slug, $t); ?>" class="">
-              <span class="">
-                <img src="<?php echo $placeholder; ?>" data-src="<? echo get_field('tax_image_url', $t . '_' . $term->term_id)["sizes"][$thumb_size]; ?>" class="img-responsive img-hover lazyload" alt="">
-              </span>
-              <div class="text">
-                <h3 class=""><b class="fz-16"><? echo $term->name; ?></b></h3>
-                <p class=""><? echo $term->description; ?></p>
-                <!-- 投稿数：<?= $term->count ?> -->
-              </div>
-            </a>
+    <?php foreach ($terms as $term) : ?>
+    <li class="">
+      <div class="">
+        <a href="<?php echo get_term_link($term->slug, $t); ?>" class="">
+        <span class="">
+        <img src="<?php echo $placeholder; ?>"
+          data-src="<?php echo get_field('tax_image_url', $t . '_' . $term->term_id)["sizes"][$thumb_size]; ?>"
+          class="img-responsive img-hover lazyload" alt="">
+      </span>
+          <div class="text">
+            <h3 class=""><b class="fz-16">
+                <? echo $term->name; ?>
+              </b></h3>
+            <p class="">
+              <? echo $term->description; ?>
+            </p>
+            <!-- 投稿数：<?= $term->count ?> -->
           </div>
-        </li>
+        </a>
+      </div>
+    </li>
 
-      <?php endforeach; ?>
+    <?php endforeach; ?>
     <?php endif; ?>
 
   </ul>
@@ -498,7 +531,9 @@
       <h2 class="g-b-0"><b class="text-serif fz-38 fz-xs-26 fw-400">買取・鑑定のご依頼</b></h2>
       <p class="g-b-10"><b class="fz-17 fw-500 text-6">最短即日、スピード対応！<br class="visible-xs">
           電話相談・出張鑑定も勿論無料！</b></p>
-      <p class="fz-14 text-lh-1_6">鑑定してもらうほどの価値があるのか、見てもらうほどの物なのか<br class="hidden-lg hidden-xs">プロだからお電話で聞くだけでもわかることがたくさんあります。<br class="hidden-xs">日本全国、幅広く対応していますので、まずはお気軽にお電話下さい。</p>
+      <p class="fz-14 text-lh-1_6">鑑定してもらうほどの価値があるのか、見てもらうほどの物なのか<br
+          class="hidden-lg hidden-xs">プロだからお電話で聞くだけでもわかることがたくさんあります。<br
+          class="hidden-xs">日本全国、幅広く対応していますので、まずはお気軽にお電話下さい。</p>
 
       <div class="box-tel-1 box-shadow-5 g-t-30 g-b-50 add_mb0">
         <div class="tel-texts">
@@ -516,7 +551,8 @@
           </h3>
           <div class="g-b-20">
             <div class="d-ib border-1 border-gs-16 border-w-4">
-              <img src="./img/common/placeholder_900x600.png" data-src="./img/home/c_1.jpg" class="img-responsive lazyload" alt="" width="314" height="176">
+              <img src="./img/common/placeholder_900x600.png" data-src="./img/home/c_1.jpg"
+                class="img-responsive lazyload" alt="" width="314" height="176">
             </div>
           </div>
           <p><a href="./contact/#contact-2" class="btn-1 btn-arrow-circle-1 w-100p" id="red-btn"><b>出張鑑定依頼はこちら</b></a>
@@ -529,10 +565,12 @@
           </h3>
           <div class="g-b-20">
             <div class="d-ib border-1 border-gs-16 border-w-4">
-              <img src="./img/common/placeholder_900x600.png" data-src="./img/home/c_2.jpg" class="img-responsive lazyload" alt="" width="314" height="176">
+              <img src="./img/common/placeholder_900x600.png" data-src="./img/home/c_2.jpg"
+                class="img-responsive lazyload" alt="" width="314" height="176">
             </div>
           </div>
-          <p><a href="./contact/#contact-3" class="btn-1 btn-arrow-circle-1 w-100p" id="red-btn"><b>持ち込み鑑定依頼はこちら</b></a></p>
+          <p><a href="./contact/#contact-3" class="btn-1 btn-arrow-circle-1 w-100p" id="red-btn"><b>持ち込み鑑定依頼はこちら</b></a>
+          </p>
           <p class="fz-14 text-left">店舗へご来店頂きその場で査定・買取いたします。ご来店される場合はご予約をお願い致します。</p>
         </div>
         <div class="col-xs-12 col-sm-4 g-b add_mb0">
@@ -541,7 +579,8 @@
           </h3>
           <div class="g-b-20">
             <div class="d-ib border-1 border-gs-16 border-w-4">
-              <img src="./img/common/placeholder_900x600.png" data-src="./img/home/c_3.jpg" class="img-responsive lazyload" alt="" width="314" height="176">
+              <img src="./img/common/placeholder_900x600.png" data-src="./img/home/c_3.jpg"
+                class="img-responsive lazyload" alt="" width="314" height="176">
             </div>
           </div>
           <p><a href="./contact/#contact-4" class="btn-1 btn-arrow-circle-1 w-100p" id="red-btn"><b>その他鑑定依頼はこちら</b></a>
@@ -562,22 +601,26 @@
   <h2 class="title-1">骨董品買取までの流れ</h2>
   <div class="row text-center">
     <div class="col-xs-12 col-sm-3 g-b-30">
-      <p><img src="./img/common/placeholder_900x900.png" data-src="./img/home/f_1.jpg" class="img-responsive img-circle lazyload" alt="" width="222" height="222"></p>
+      <p><img src="./img/common/placeholder_900x900.png" data-src="./img/home/f_1.jpg"
+          class="img-responsive img-circle lazyload" alt="" width="222" height="222"></p>
       <p class="g-xs-b-0"><b class="fz-18">お問い合わせ</b></p>
       <p>「お電話」または「<a href="./contact/">お問い合わせフォーム</a>」よりご連絡ください。</p>
     </div>
     <div class="col-xs-12 col-sm-3 g-b-30">
-      <p class="icon-arrow-double-1"><img src="./img/common/placeholder_900x900.png" data-src="./img/home/f_2.jpg" class="img-responsive img-circle lazyload" alt="" width="222" height="222"></p>
+      <p class="icon-arrow-double-1"><img src="./img/common/placeholder_900x900.png" data-src="./img/home/f_2.jpg"
+          class="img-responsive img-circle lazyload" alt="" width="222" height="222"></p>
       <p class="g-xs-b-0"><b class="fz-18">訪問</b></p>
       <p>日程を調整させていただきました上でお伺い致します。</p>
     </div>
     <div class="col-xs-12 col-sm-3 g-b-30">
-      <p class="icon-arrow-double-1"><img src="./img/common/placeholder_900x900.png" data-src="./img/home/f_3.jpg" class="img-responsive img-circle lazyload" alt="" width="222" height="222"></p>
+      <p class="icon-arrow-double-1"><img src="./img/common/placeholder_900x900.png" data-src="./img/home/f_3.jpg"
+          class="img-responsive img-circle lazyload" alt="" width="222" height="222"></p>
       <p class="g-xs-b-0"><b class="fz-18">鑑定・査定</b></p>
       <p>無料にて査定いたします。もちろん、出張費も無料です。</p>
     </div>
     <div class="col-xs-12 col-sm-3 g-b-30">
-      <p class="icon-arrow-double-1"><img src="./img/common/placeholder_900x900.png" data-src="./img/home/f_4.jpg" class="img-responsive img-circle lazyload" alt="" width="222" height="222"></p>
+      <p class="icon-arrow-double-1"><img src="./img/common/placeholder_900x900.png" data-src="./img/home/f_4.jpg"
+          class="img-responsive img-circle lazyload" alt="" width="222" height="222"></p>
       <p class="g-xs-b-0"><b class="fz-18">買取</b></p>
       <p>ご成約となります。その場で現金にて買取させていただきます。</p>
     </div>
@@ -806,9 +849,16 @@
 <div class="">
   <div class="container">
     <div class="row text-center g-t">
-      <div class="col-xs-12 col-sm-4 g-b"><a href="./faq/"><img src="./img/common/placeholder_900x600.png" data-src="./img/common/banner_faq.jpg" class="img-responsive img-hover box-shadow-5 lazyload" alt="よくあるご質問" width="346" height="144"></a></div>
-      <div class="col-xs-12 col-sm-4 g-b"><a href="./staffblog/"><img src="./img/common/placeholder_900x600.png" data-src="./img/common/banner_blog.jpg" class="img-responsive img-hover box-shadow-5 lazyload" alt="寿永堂Blog" width="346" height="144"></a></div>
-      <div class="col-xs-12 col-sm-4 g-b"><a href="http://www.jewelry-jyueidou.com/" target="_blank"><img src="./img/common/placeholder_900x600.png" data-src="./img/common/banner_jewelry.jpg" class="img-responsive img-hover box-shadow-5 lazyload" alt="Jewelry Jyueido" width="346" height="144"></a></div>
+      <div class="col-xs-12 col-sm-4 g-b"><a href="./faq/"><img src="./img/common/placeholder_900x600.png"
+            data-src="./img/common/banner_faq.jpg" class="img-responsive img-hover box-shadow-5 lazyload" alt="よくあるご質問"
+            width="346" height="144"></a></div>
+      <div class="col-xs-12 col-sm-4 g-b"><a href="./staffblog/"><img src="./img/common/placeholder_900x600.png"
+            data-src="./img/common/banner_blog.jpg" class="img-responsive img-hover box-shadow-5 lazyload" alt="寿永堂Blog"
+            width="346" height="144"></a></div>
+      <div class="col-xs-12 col-sm-4 g-b"><a href="http://www.jewelry-jyueidou.com/" target="_blank"><img
+            src="./img/common/placeholder_900x600.png" data-src="./img/common/banner_jewelry.jpg"
+            class="img-responsive img-hover box-shadow-5 lazyload" alt="Jewelry Jyueido" width="346" height="144"></a>
+      </div>
     </div>
   </div>
 </div>
@@ -857,14 +907,16 @@
           <div class="border-b-1 border-t-1 border-b-c-fff-040 ccc">
             <p><b class="text-6 fz-16 fw-400">お電話でのご相談・鑑定依頼</b></p>
             <p class="fz-12">電話買取簡易査定が可能ですので、まずはご相談ください。</p>
-            <p><a href="tel:0120-13-6767"><img src="/img/common/tel-fff.svg" class="img-responsive" alt="0120-13-6767"></a></p>
+            <p><a href="tel:0120-13-6767"><img src="/img/common/tel-fff.svg" class="img-responsive"
+                  alt="0120-13-6767"></a></p>
           </div>
         </div>
         <div class="col-xs-12 col-sm-6 g-b bbb">
           <div class="border-b-1 border-t-1 border-b-c-fff-040 ccc">
             <p><b class="text-6 fz-16 fw-400">鑑定依頼メールフォーム</b></p>
             <p class="fz-12">出張鑑定や持ち込み鑑定のご依頼はメールフォームからも<br class="hidden-xs">受け付けております。お気軽にご連絡ください。</p>
-            <p><a href="/contact/" class="btn-1 btn-arrow-circle-1 box-shadow-5 w-100p max-w-450 fw-500" id="red-btn">メールフォームはこちら</a></p>
+            <p><a href="/contact/" class="btn-1 btn-arrow-circle-1 box-shadow-5 w-100p max-w-450 fw-500"
+                id="red-btn">メールフォームはこちら</a></p>
           </div>
         </div>
         <div class="col-xs-12 col-sm-6 g-b bbb">
@@ -883,35 +935,35 @@
   </div>
 </div>
 <script>
-  const overlay = $("#js-overlay");
-  const closeButtons = $(".modal-close");
+const overlay = $("#js-overlay");
+const closeButtons = $(".modal-close");
 
-  $(".modal-open").on('click', function() {
-    const targetModalId = "#js-modal-" + $(this).attr("id").split("js-open")[1];
-    $(targetModalId).addClass("open");
-    overlay.addClass("open");
-  });
+$(".modal-open").on('click', function() {
+  const targetModalId = "#js-modal-" + $(this).attr("id").split("js-open")[1];
+  $(targetModalId).addClass("open");
+  overlay.addClass("open");
+});
 
-  closeButtons.on('click', function() {
-    $(".modal").removeClass("open");
-    overlay.removeClass("open");
-  });
+closeButtons.on('click', function() {
+  $(".modal").removeClass("open");
+  overlay.removeClass("open");
+});
 
 
-  // const modal = $("#js-modal-1");
-  // const overlay = $("#js-overlay");
-  // const close = $("#js-close"); // 追記
-  // const open = $("#js-open1");
+// const modal = $("#js-modal-1");
+// const overlay = $("#js-overlay");
+// const close = $("#js-close"); // 追記
+// const open = $("#js-open1");
 
-  // open.on('click', function() { //ボタンをクリックしたら
-  //     modal.addClass("open"); // modalクラスにopenクラス付与
-  //     overlay.addClass("open"); // overlayクラスにopenクラス付与
-  // });
+// open.on('click', function() { //ボタンをクリックしたら
+//     modal.addClass("open"); // modalクラスにopenクラス付与
+//     overlay.addClass("open"); // overlayクラスにopenクラス付与
+// });
 
-  // // 追記
-  // close.on('click', function() { //×ボタンをクリックしたら
-  //     modal.removeClass("open"); // modalクラスからopenクラスを外す
-  //     overlay.removeClass("open"); // overlayクラスからopenクラスを外す
-  // });
+// // 追記
+// close.on('click', function() { //×ボタンをクリックしたら
+//     modal.removeClass("open"); // modalクラスからopenクラスを外す
+//     overlay.removeClass("open"); // overlayクラスからopenクラスを外す
+// });
 </script>
 <?php get_footer(); ?>

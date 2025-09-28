@@ -7,8 +7,7 @@
 	'post_type' => 'items',
 	'meta_key' => 'sort_num',
 	'orderby' => 'meta_value',
-	'order' => 'asc',
-	'parent' => 0 // 親カテゴリのみにする
+	'order' => 'asc'
 );
 
 $placeholder = $site_url . '/img/common/placeholder_900x600.png';

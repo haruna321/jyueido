@@ -1,12 +1,13 @@
 <?php
 namespace AIOSEO\Plugin\Common\Main;
 
-use AIOSEO\Plugin\Common\Models;
-
 // Exit if accessed directly.
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
+
+use AIOSEO\Plugin\Common\Models;
+use AIOSEO\Plugin\Common\Integrations\BuddyPress as BuddyPressIntegration;
 
 /**
  * Abstract class that Pro and Lite both extend.
@@ -40,6 +41,9 @@ abstract class Filters {
 	public function __construct() {
 		add_filter( 'wp_optimize_get_tables', [ $this, 'wpOptimizeAioseoTables' ] );
 
+		// This action needs to run on AJAX/cron for scheduled rewritten posts in Yoast Duplicate Post.
+		add_action( 'duplicate_post_after_rewriting', [ $this, 'updateRescheduledPostMeta' ], 10, 2 );
+
 		if ( wp_doing_ajax() || wp_doing_cron() ) {
 			return;
 		}
@@ -51,11 +55,13 @@ abstract class Filters {
 		add_filter( 'genesis_detect_seo_plugins', [ $this, 'genesisTheme' ] );
 
 		// WeGlot compatibility.
-		if ( preg_match( '#(/default-sitemap\.xsl)$#i', $_SERVER['REQUEST_URI'] ) ) {
+		if ( isset( $_SERVER['REQUEST_URI'] ) && preg_match( '#(/default-sitemap\.xsl)$#i', (string) sanitize_text_field( wp_unslash( $_SERVER['REQUEST_URI'] ) ) ) ) {
 			add_filter( 'weglot_active_translation_before_treat_page', '__return_false' );
 		}
 
-		if ( preg_match( '#(\.xml)$#i', $_SERVER['REQUEST_URI'] ) ) {
+		add_filter( 'wpml_tm_adjust_translation_fields', [ $this, 'defineMetaFieldsForWpml' ] );
+
+		if ( isset( $_SERVER['REQUEST_URI'] ) && preg_match( '#(\.xml)$#i', (string) sanitize_text_field( wp_unslash( $_SERVER['REQUEST_URI'] ) ) ) ) {
 			add_filter( 'jetpack_boost_should_defer_js', '__return_false' );
 		}
 
@@ -106,11 +112,12 @@ abstract class Filters {
 		add_filter( 'wp_consent_api_registered_all-in-one-seo-pack-pro/all_in_one_seo_pack.php', '__return_true' );
 
 		foreach ( aioseo()->addons->getAddons() as $addon ) {
-			if ( ! $addon->installed ) {
+			if ( empty( $addon->installed ) || empty( $addon->basename ) ) {
 				continue;
 			}
-
-			add_filter( 'wp_consent_api_registered_' . $addon->basename, '__return_true' );
+			if ( isset( $addon->basename ) ) {
+				add_filter( 'wp_consent_api_registered_' . $addon->basename, '__return_true' );
+			}
 		}
 	}
 
@@ -122,8 +129,8 @@ abstract class Filters {
 	 * @return void
 	 */
 	public function removeEmojiDetectionScripts() {
-		global $wp_version;
-		if ( version_compare( $wp_version, '6.2', '>=' ) ) {
+		global $wp_version; // phpcs:ignore Squiz.NamingConventions.ValidVariableName
+		if ( version_compare( $wp_version, '6.2', '>=' ) ) { // phpcs:ignore Squiz.NamingConventions.ValidVariableName
 			remove_action( 'admin_print_scripts', 'print_emoji_detection_script' );
 		}
 	}
@@ -132,6 +139,7 @@ abstract class Filters {
 	 * Resets the current user if bbPress is active.
 	 * We have to do this because our calls to wp_get_current_user() set the current user early and this breaks core functionality in bbPress.
 	 *
+
 	 *
 	 * @since 4.1.5
 	 *
@@ -139,14 +147,15 @@ abstract class Filters {
 	 */
 	public function resetUserBBPress() {
 		if ( function_exists( 'bbpress' ) ) {
-			global $current_user;
-			$current_user = null;
+			global $current_user; // phpcs:ignore Squiz.NamingConventions.ValidVariableName
+			$current_user = null; // phpcs:ignore Squiz.NamingConventions.ValidVariableName
 		}
 	}
 
 	/**
 	 * Removes the bbPress title filter when adding a new reply with empty title to avoid fatal error.
 	 *
+
 	 *
 	 * @since 4.3.1
 	 *
@@ -171,19 +180,16 @@ abstract class Filters {
 	 *
 	 * @since 4.1.1
 	 *
-	 * @param  integer  $newPostId     The new post ID.
-	 * @param  \WP_Post $originalPost The original post object.
+	 * @param  integer  $targetPostId The target post ID.
+	 * @param  \WP_Post $sourcePost   The source post object.
 	 * @return void
 	 */
-	public function duplicatePost( $newPostId, $originalPost = null ) {
-		$originalPostId     = is_object( $originalPost ) ? $originalPost->ID : $originalPost;
-		$originalAioseoPost = Models\Post::getPost( $originalPostId );
-		if ( ! $originalAioseoPost->exists() ) {
-			return;
-		}
+	public function duplicatePost( $targetPostId, $sourcePost = null ) {
+		$sourcePostId     = ! empty( $sourcePost->ID ) ? $sourcePost->ID : $sourcePost;
+		$sourceAioseoPost = Models\Post::getPost( $sourcePostId );
+		$targetPost       = Models\Post::getPost( $targetPostId );
 
-		$newAioseoPost = Models\Post::getPost( $newPostId );
-		$columns       = $originalAioseoPost->getColumns();
+		$columns = $sourceAioseoPost->getColumns();
 		foreach ( $columns as $column => $value ) {
 			// Skip the ID column.
 			if ( 'id' === $column ) {
@@ -191,13 +197,14 @@ abstract class Filters {
 			}
 
 			if ( 'post_id' === $column ) {
-				$newAioseoPost->$column = $newPostId;
+				$targetPost->$column = $targetPostId;
 				continue;
 			}
 
-			$newAioseoPost->$column = $originalAioseoPost->$column;
+			$targetPost->$column = $sourceAioseoPost->$column;
 		}
-		$newAioseoPost->save();
+
+		$targetPost->save();
 	}
 
 	/**
@@ -221,6 +228,24 @@ abstract class Filters {
 		}
 
 		$this->duplicatePost( (int) $metaValue, $originalPost );
+	}
+
+	/**
+	 * Updates the model when a post is republished.
+	 * Yoast Duplicate Post doesn't do this since we store our data in a custom table.
+	 *
+	 * @since 4.6.7
+	 *
+	 * @param  int  $scheduledPostId The ID of the scheduled post.
+	 * @param  int  $originalPostId  The ID of the original post.
+	 * @return void
+	 */
+	public function updateRescheduledPostMeta( $scheduledPostId, $originalPostId ) {
+		$this->duplicatePost( $originalPostId, $scheduledPostId );
+
+		// Delete the AIOSEO post record for the scheduled post.
+		$scheduledAioseoPost = Models\Post::getPost( $scheduledPostId );
+		$scheduledAioseoPost->delete();
 	}
 
 	/**
@@ -328,7 +353,12 @@ abstract class Filters {
 		if ( $this->plugin === $pluginFile && ! empty( $actionLinks ) ) {
 			foreach ( $actionLinks as $key => $value ) {
 				$link = [
-					$key => '<a href="' . $value['url'] . '">' . $value['label'] . '</a>'
+					$key => sprintf(
+						'<a href="%1$s" %2$s target="_blank">%3$s</a>',
+						esc_url( $value['url'] ),
+						isset( $value['title'] ) ? 'title="' . esc_attr( $value['title'] ) . '"' : '',
+						$value['label']
+					)
 				];
 
 				$actions = 'after' === $position ? array_merge( $actions, $link ) : array_merge( $link, $actions );
@@ -376,7 +406,38 @@ abstract class Filters {
 			'fusion_element', // Avada
 			'elementor_library',
 			'redirect_rule', // Safe Redirect Manager
-			'seedprod'
+			'seedprod',
+			'tcb_lightbox',
+
+			// Thrive Themes internal post types.
+			'tva_module',
+			'tvo_display',
+			'tvo_capture',
+			'tva_module',
+			'tve_lead_1c_signup',
+			'tve_form_type',
+			'tvd_login_edit',
+			'tve_global_cond_set',
+			'tve_cond_display',
+			'tve_lead_2s_lightbox',
+			'tcb_symbol',
+			'td_nm_notification',
+			'tvd_content_set',
+			'tve_saved_lp',
+			'tve_notifications',
+			'tve_user_template',
+			'tve_video_data',
+			'tva_course_type',
+			'tva-acc-restriction',
+			'tva_course_overview',
+			'tve_ult_schedule',
+			'tqb_optin',
+			'tqb_splash',
+			'tva_certificate',
+			'tva_course_overview',
+
+			// BuddyPress post types.
+			BuddyPressIntegration::getEmailCptSlug()
 		];
 
 		foreach ( $postTypes as $index => $postType ) {
@@ -402,15 +463,13 @@ abstract class Filters {
 	 * @return array[object]|array[string]             The filtered taxonomies.
 	 */
 	public function removeInvalidPublicTaxonomies( $taxonomies ) {
-		// Check if the Avada Builder plugin is enabled.
-		if ( ! defined( 'FUSION_BUILDER_VERSION' ) ) {
-			return $taxonomies;
-		}
-
 		$taxonomiesToRemove = [
 			'fusion_tb_category',
 			'element_category',
-			'template_category'
+			'template_category',
+
+			// Thrive Themes internal taxonomies.
+			'tcb_symbols_tax'
 		];
 
 		foreach ( $taxonomies as $index => $taxonomy ) {
@@ -544,5 +603,34 @@ abstract class Filters {
 		}
 
 		return $tables;
+	}
+
+	/**
+	 * Defines specific meta fields for WPML so character limits can be applied when auto-translating fields.
+	 *
+	 * @since 4.8.3.2
+	 *
+	 * @param  array $fields The fields.
+	 * @return array         The modified fields.
+	 */
+	public function defineMetaFieldsForWpml( $fields ) {
+		foreach ( $fields as &$field ) {
+			if ( empty( $field['field_type'] ) ) {
+				continue;
+			}
+
+			$fieldKey = strtolower( preg_replace( '/^(field-)(.*)(-0)$/', '$2', $field['field_type'] ) );
+
+			switch ( $fieldKey ) {
+				case '_aioseo_title':
+					$field['purpose'] = 'seo_title';
+					break;
+				case '_aioseo_description':
+					$field['purpose'] = 'seo_meta_description';
+					break;
+			}
+		}
+
+		return $fields;
 	}
 }

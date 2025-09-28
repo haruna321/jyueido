@@ -49,21 +49,45 @@ class Cache {
 	protected $prefix = '';
 
 	/**
+	 * Class constructor.
+	 *
+	 * @since 4.7.7.1
+	 */
+	public function __construct() {
+		add_action( 'init', [ $this, 'checkIfTableExists' ] ); // This needs to run on init because the DB
+		// class gets instantiated along with the cache class.
+	}
+
+	/**
+	 * Checks if the cache table exists and creates it if it doesn't.
+	 *
+	 * @since 4.7.7.1
+	 *
+	 * @return void
+	 */
+	public function checkIfTableExists() {
+		if ( ! aioseo()->core->db->tableExists( $this->table ) ) {
+			aioseo()->preUpdates->createCacheTable();
+		}
+	}
+
+	/**
 	 * Returns the cache value for a key if it exists and is not expired.
 	 *
 	 * @since 4.1.5
 	 *
-	 * @param  string $key The cache key name. Use a '%' for a like query.
-	 * @return mixed       The value or null if the cache does not exist.
+	 * @param  string     $key            The cache key name. Use a '%' for a like query.
+	 * @param  bool|array $allowedClasses Whether to allow objects to be returned.
+	 * @return mixed                      The value or null if the cache does not exist.
 	 */
-	public function get( $key ) {
+	public function get( $key, $allowedClasses = false ) {
 		$key = $this->prepareKey( $key );
 		if ( isset( self::$cache[ $key ] ) ) {
 			return self::$cache[ $key ];
 		}
 
 		// Are we searching for a group of keys?
-		$isLikeGet = preg_match( '/%/', $key );
+		$isLikeGet = preg_match( '/%/', (string) $key );
 
 		$result = aioseo()->core->db
 			->start( $this->table )
@@ -82,7 +106,7 @@ class Cache {
 		// If we have something let's normalize it.
 		if ( $values ) {
 			foreach ( $values as &$value ) {
-				$value['value'] = maybe_unserialize( $value['value'] );
+				$value['value'] = aioseo()->helpers->maybeUnserialize( $value['value'], $allowedClasses );
 			}
 			// Return only the single cache value.
 			if ( ! $isLikeGet ) {
@@ -118,25 +142,25 @@ class Cache {
 			$expiration = 10 * MINUTE_IN_SECONDS;
 		}
 
-		$value      = serialize( $value );
-		$expiration = 0 < $expiration ? aioseo()->helpers->timeToMysql( time() + $expiration ) : null;
+		$serializedValue = serialize( $value );
+		$expiration      = 0 < $expiration ? aioseo()->helpers->timeToMysql( time() + $expiration ) : null;
 
 		aioseo()->core->db->insert( $this->table )
 			->set( [
 				'key'        => $this->prepareKey( $key ),
-				'value'      => $value,
+				'value'      => $serializedValue,
 				'expiration' => $expiration,
 				'created'    => aioseo()->helpers->timeToMysql( time() ),
 				'updated'    => aioseo()->helpers->timeToMysql( time() )
 			] )
 			->onDuplicate( [
-				'value'      => $value,
+				'value'      => $serializedValue,
 				'expiration' => $expiration,
 				'updated'    => aioseo()->helpers->timeToMysql( time() )
 			] )
 			->run();
 
-		$this->clearStatic( $key );
+		$this->updateStatic( $key, $value );
 	}
 
 	/**
@@ -184,25 +208,64 @@ class Cache {
 	 * @return void
 	 */
 	public function clear() {
+		// Bust the tableExists and columnExists cache.
+		aioseo()->internalOptions->database->installedTables = '';
+
 		if ( $this->prefix ) {
 			$this->clearPrefix( '' );
 
 			return;
 		}
 
+		// Try to acquire the lock.
+		if ( ! aioseo()->core->db->acquireLock( 'aioseo_cache_clear_lock', 0 ) ) {
+			// If we couldn't acquire the lock, exit early without doing anything.
+			// This means another process is already clearing the cache.
+			return;
+		}
+
 		// If we find the activation redirect, we'll need to reset it after clearing.
 		$activationRedirect = $this->get( 'activation_redirect' );
 
-		aioseo()->core->db->truncate( $this->table )->run();
+		// Create a temporary table with the same structure.
+		$table    = aioseo()->core->db->prefix . $this->table;
+		$newTable = aioseo()->core->db->prefix . $this->table . '_new';
+		$oldTable = aioseo()->core->db->prefix . $this->table . '_old';
+
+		try {
+			// Drop the temp table if it exists from a previous failed attempt.
+			if ( false === aioseo()->core->db->execute( "DROP TABLE IF EXISTS {$newTable}" ) ) {
+				throw new \Exception( 'Failed to drop temporary table' );
+			}
+
+			// Create the new empty table with the same structure.
+			if ( false === aioseo()->core->db->execute( "CREATE TABLE {$newTable} LIKE {$table}" ) ) {
+				throw new \Exception( 'Failed to create temporary table' );
+			}
+
+			// Rename tables (atomic operation in MySQL).
+			if ( false === aioseo()->core->db->execute( "RENAME TABLE {$table} TO {$oldTable}, {$newTable} TO {$table}" ) ) {
+				throw new \Exception( 'Failed to rename tables' );
+			}
+
+			// Drop the old table.
+			if ( false === aioseo()->core->db->execute( "DROP TABLE {$oldTable}" ) ) {
+				throw new \Exception( 'Failed to drop old table' );
+			}
+		} catch ( \Exception $e ) {
+			// If something fails, ensure we clean up any temporary tables.
+			aioseo()->core->db->execute( "DROP TABLE IF EXISTS {$newTable}" );
+			aioseo()->core->db->execute( "DROP TABLE IF EXISTS {$oldTable}" );
+
+			// Truncate table to clear the cache.
+			aioseo()->core->db->truncate( $this->table )->run();
+		}
 
 		$this->clearStatic();
 
 		if ( $activationRedirect ) {
 			$this->update( 'activation_redirect', $activationRedirect, 30 );
 		}
-
-		// Bust the tableExists and columnExists cache.
-		aioseo()->internalOptions->database->installedTables = '';
 	}
 
 	/**
@@ -256,6 +319,25 @@ class Cache {
 		}
 
 		unset( self::$cache[ $this->prepareKey( $key ) ] );
+	}
+
+	/**
+	 * Clears all of our static in-memory cache or the cache for a single given key.
+	 *
+	 * @since 4.7.1
+	 *
+	 * @param  string $key   A key to clear (optional).
+	 * @param  string $value A value to update (optional).
+	 * @return void
+	 */
+	private function updateStatic( $key = null, $value = null ) {
+		if ( empty( $key ) ) {
+			$this->clearStatic( $key );
+
+			return;
+		}
+
+		self::$cache[ $this->prepareKey( $key ) ] = $value;
 	}
 
 	/**

@@ -168,9 +168,9 @@ if (
     <li class=""><a href="<?php echo $site_url; ?>/items/tea/tea-stove/">涼炉</a></li>
   <?php endif; ?>
 	<?php if ($current_url === '/items/musical-instrument/') : ?> 
-    <li class=""><a href="<?php echo $site_url; ?>/items/musical-instrument/shakuhachi/">尺八</a></li>
-    <li class=""><a href="<?php echo $site_url; ?>/items/musical-instrument/sho/">笙</a></li>
-    <li class=""><a href="<?php echo $site_url; ?>/items/musical-instrument/biwa/">琵琶</a></li>
+    <li class=""><a href="#">尺八</a></li>
+    <li class=""><a href="#">笙</a></li>
+    <li class=""><a href="#">琵琶</a></li>
   <?php endif; ?>
 </ul>
 </div>
@@ -284,6 +284,9 @@ if ($group && isset($group['is_active']) && $group['is_active']) : ?>
 <?php endfor; ?>
 
 </div>
+<div class="btn-container-1 g-t-0 add_mb20">
+      <a href="<?php echo $site_url; ?>/achievements-item/<?php echo get_field('achievements-link'); ?>" class="btn-1-extended btn-arrow-circle-1"><b><?php the_title(); ?>の買取実績一覧</b></a>
+    </div>
 </div>
 <?php endif; ?>
 

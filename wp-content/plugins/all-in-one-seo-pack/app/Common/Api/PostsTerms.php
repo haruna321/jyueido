@@ -122,31 +122,39 @@ class PostsTerms {
 	/**
 	 * Get post data for fetch requests
 	 *
-	 * @since 4.0.0
+	 * @since   4.0.0
+	 * @version 4.8.3 Changes the return value to include only the Vue data.
 	 *
 	 * @param  \WP_REST_Request  $request The REST Request
 	 * @return \WP_REST_Response          The response.
 	 */
 	public static function getPostData( $request ) {
-		$args = $request->get_query_params();
+		$args   = $request->get_query_params();
+		$postId = $args['postId'] ?? null;
 
-		if ( empty( $args['postId'] ) ) {
+		if ( empty( $postId ) ) {
 			return new \WP_REST_Response( [
 				'success' => false,
 				'message' => 'No post ID was provided.'
 			], 400 );
 		}
 
-		$thePost = Models\Post::getPost( $args['postId'] );
+		if ( ! current_user_can( 'edit_post', $postId ) ) {
+			return new \WP_REST_Response( [
+				'success' => false,
+				'message' => 'You are not allowed to access the data for this post.'
+			], 403 );
+		}
+
+		$data = aioseo()->helpers->getVueData( 'post', $postId, $args['integrationSlug'] ?? null );
 
 		return new \WP_REST_Response( [
-			'success'  => true,
-			'post'     => $thePost,
-			'postData' => [
-				'parsedTitle'       => aioseo()->tags->replaceTags( $thePost->title, $args['postId'] ),
-				'parsedDescription' => aioseo()->tags->replaceTags( $thePost->description, $args['postId'] ),
-				'content'           => aioseo()->helpers->theContent( self::getAnalysisContent( $args['postId'] ) ),
-				'slug'              => get_post_field( 'post_name', $args['postId'] )
+			'success' => true,
+			'data'    => [
+				// We just send the minimum data that is needed for the post settings. See #7461
+				'currentPost'  => $data['currentPost'],
+				'redirects'    => ! empty( $data['redirects'] ) ? $data['redirects'] : null,
+				'seoRevisions' => ! empty( $data['seoRevisions'] ) ? $data['seoRevisions'] : null
 			]
 		], 200 );
 	}
@@ -224,7 +232,7 @@ class PostsTerms {
 		$body['og_title']            = ! empty( $body['og_title'] ) ? sanitize_text_field( $body['og_title'] ) : null;
 		$body['og_description']      = ! empty( $body['og_description'] ) ? sanitize_text_field( $body['og_description'] ) : null;
 		$body['og_article_section']  = ! empty( $body['og_article_section'] ) ? sanitize_text_field( $body['og_article_section'] ) : null;
-		$body['og_article_tags']     = ! empty( $body['og_article_tags'] ) ? sanitize_text_field( $body['og_article_tags'] ) : null;
+		$body['og_article_tags']     = ! empty( $body['og_article_tags'] ) ? aioseo()->helpers->sanitize( $body['og_article_tags'] ) : null;
 		$body['twitter_title']       = ! empty( $body['twitter_title'] ) ? sanitize_text_field( $body['twitter_title'] ) : null;
 		$body['twitter_description'] = ! empty( $body['twitter_description'] ) ? sanitize_text_field( $body['twitter_description'] ) : null;
 
@@ -264,7 +272,9 @@ class PostsTerms {
 
 		$posts = [];
 		foreach ( $ids as $postId ) {
-			$headlineResult = aioseo()->standalone->headlineAnalyzer->getResult( html_entity_decode( get_the_title( $postId ) ) );
+			$postTitle      = get_the_title( $postId );
+			$headline       = ! empty( $postTitle ) ? sanitize_text_field( $postTitle ) : ''; // We need this to achieve consistency for the score when using special characters in titles
+			$headlineResult = aioseo()->standalone->headlineAnalyzer->getResult( $headline );
 
 			$posts[] = [
 				'id'                => $postId,
@@ -301,12 +311,6 @@ class PostsTerms {
 		}
 
 		$aioseoPost = Models\Post::getPost( $postId );
-		$aioseoData = json_decode( wp_json_encode( $aioseoPost ), true );
-
-		// Decode these below because `savePost()` expects them to be an array.
-		if ( ! empty( $aioseoData['keyphrases'] ) ) {
-			$aioseoData['keyphrases'] = json_decode( $aioseoData['keyphrases'], true );
-		}
 
 		if ( $isMedia ) {
 			wp_update_post(
@@ -318,7 +322,13 @@ class PostsTerms {
 			update_post_meta( $postId, '_wp_attachment_image_alt', sanitize_text_field( $body['imageAltTag'] ) );
 		}
 
-		Models\Post::savePost( $postId, array_replace( $aioseoData, $body ) );
+		$aioseoPost->title       = $body['title'];
+		$aioseoPost->description = $body['description'];
+		$aioseoPost->updated     = gmdate( 'Y-m-d H:i:s' );
+		$aioseoPost->save();
+
+		// Trigger the action hook so we can create a revision.
+		do_action( 'aioseo_insert_post', $postId );
 
 		$lastError = aioseo()->core->db->lastError();
 		if ( ! empty( $lastError ) ) {

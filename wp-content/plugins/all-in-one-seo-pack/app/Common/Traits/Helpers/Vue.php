@@ -17,33 +17,6 @@ use AIOSEO\Plugin\Common\Tools;
  */
 trait Vue {
 	/**
-	 * Holds the data for Vue.
-	 *
-	 * @since 4.4.9
-	 *
-	 * @var array
-	 */
-	private $data = [];
-
-	/**
-	 * Optional arguments for setting the data.
-	 *
-	 * @since 4.4.9
-	 *
-	 * @var array
-	 */
-	private $args = [];
-
-	/**
-	 * Holds the cached data.
-	 *
-	 * @since 4.5.1
-	 *
-	 * @var array
-	 */
-	private $cache = [];
-
-	/**
 	 * Returns the data for Vue.
 	 *
 	 * @since   4.0.0
@@ -76,6 +49,9 @@ trait Vue {
 		$this->setSeoRevisionsData();
 		$this->setToolsOrSettingsData();
 		$this->setPageBuilderData();
+		$this->setWritingAssistantData();
+		$this->setBreadcrumbsData();
+		$this->setSeoAnalyzerData();
 
 		$this->cache[ $hash ] = $this->data;
 
@@ -95,21 +71,22 @@ trait Vue {
 		$staticHomePage   = intval( get_option( 'page_on_front' ) );
 
 		$this->data = [
-			'page'              => $this->args['page'],
-			'screen'            => [
+			'page'               => $this->args['page'],
+			'screen'             => [
 				'base'        => isset( $screen->base ) ? $screen->base : '',
 				'postType'    => isset( $screen->post_type ) ? $screen->post_type : '',
 				'blockEditor' => isset( $screen->is_block_editor ) ? $screen->is_block_editor : false,
 				'new'         => isset( $screen->action ) && 'add' === $screen->action
 			],
-			'internalOptions'   => aioseo()->internalOptions->all(),
-			'options'           => aioseo()->options->all(),
-			'dynamicOptions'    => aioseo()->dynamicOptions->all(),
-			'deprecatedOptions' => aioseo()->internalOptions->getAllDeprecatedOptions( true ),
-			'settings'          => aioseo()->settings->all(),
-			'tags'              => aioseo()->tags->all( true ),
-			'nonce'             => wp_create_nonce( 'wp_rest' ),
-			'urls'              => [
+			'internalOptions'    => aioseo()->internalOptions->all(),
+			'options'            => aioseo()->options->all(),
+			'dynamicOptions'     => aioseo()->dynamicOptions->all(),
+			'deprecatedOptions'  => aioseo()->internalOptions->getAllDeprecatedOptions( true ),
+			'settings'           => aioseo()->settings->all(),
+			'additional_scripts' => apply_filters( 'aioseo_vue_additional_scripts_enabled', true ),
+			'tags'               => aioseo()->tags->all( true ),
+			'nonce'              => wp_create_nonce( 'wp_rest' ),
+			'urls'               => [
 				'domain'            => $this->getSiteDomain(),
 				'mainSiteUrl'       => $this->getSiteUrl(),
 				'siteLogo'          => aioseo()->helpers->getSiteLogoUrl(),
@@ -120,9 +97,10 @@ trait Vue {
 				'assetsPath'        => aioseo()->core->assets->getAssetsPath(),
 				'generalSitemapUrl' => aioseo()->sitemap->helpers->getUrl( 'general' ),
 				'rssSitemapUrl'     => aioseo()->sitemap->helpers->getUrl( 'rss' ),
+				'llmsUrl'           => aioseo()->llms->getUrl(),
 				'robotsTxtUrl'      => $this->getSiteUrl() . '/robots.txt',
-				'blockedBotsLogUrl' => wp_upload_dir()['baseurl'] . '/aioseo/logs/aioseo-bad-bot-blocker.log',
-				'upgradeUrl'        => apply_filters( 'aioseo_upgrade_link', AIOSEO_MARKETING_URL ),
+				'marketingSiteUrl'  => $this->getMarketingSiteUrl(),
+				'upgradeUrl'        => apply_filters( 'aioseo_upgrade_link', AIOSEO_MARKETING_URL . 'lite-upgrade/' ),
 				'staticHomePage'    => 'page' === get_option( 'show_on_front' ) ? get_edit_post_link( get_option( 'page_on_front' ), 'url' ) : null,
 				'feeds'             => [
 					'rdf'            => get_bloginfo( 'rdf_url' ),
@@ -164,41 +142,47 @@ trait Vue {
 				],
 				'truSeoWorker'      => aioseo()->core->assets->jsUrl( 'src/app/tru-seo/analyzer/main.js' )
 			],
-			'backups'           => [],
-			'importers'         => [],
-			'data'              => [
-				'server'              => aioseo()->helpers->getServerName(),
-				'robots'              => [
+			'backups'            => [],
+			'importers'          => [],
+			'data'               => [
+				'server'                => aioseo()->helpers->getServerName(),
+				'robots'                => [
 					'defaultRules'      => [],
 					'hasPhysicalRobots' => null,
 					'rewriteExists'     => null,
 					'sitemapUrls'       => []
 				],
-				'logSizes'            => [
-					'badBotBlockerLog' => null
+				'status'                => [],
+				'htaccess'              => '',
+				'isMultisite'           => is_multisite(),
+				'isNetworkAdmin'        => is_network_admin(),
+				'currentBlogId'         => get_current_blog_id(),
+				'mainSite'              => is_main_site(),
+				'subdomain'             => $this->isSubdomain(),
+				'isBBPressActive'       => class_exists( 'bbPress' ),
+				'isClassicEditorActive' => $this->isClassicEditorActive(),
+				'isWooCommerceActive'   => $this->isWooCommerceActive(),
+				'staticHomePage'        => $isStaticHomePage ? $staticHomePage : false,
+				'staticBlogPage'        => $this->getBlogPageId(),
+				'staticBlogPageTitle'   => get_the_title( $this->getBlogPageId() ),
+				'isDev'                 => $this->isDev(),
+				'isLocal'               => $this->isLocalUrl( site_url() ),
+				'isSsl'                 => is_ssl(),
+				'hasUrlTrailingSlash'   => '/' === user_trailingslashit( '' ),
+				'permalinkStructure'    => get_option( 'permalink_structure' ),
+				'usingPermalinks'       => aioseo()->helpers->usingPermalinks(),
+				'dateFormat'            => get_option( 'date_format' ),
+				'timeFormat'            => get_option( 'time_format' ),
+				'siteName'              => aioseo()->helpers->getWebsiteName(),
+				'adminEmail'            => get_bloginfo( 'admin_email' ),
+				'blocks'                => [
+					'toc' => [
+						'hashPrefix' => apply_filters( 'aioseo_toc_hash_prefix', 'aioseo-' )
+					]
 				],
-				'status'              => [],
-				'htaccess'            => '',
-				'isMultisite'         => is_multisite(),
-				'isNetworkAdmin'      => is_network_admin(),
-				'currentBlogId'       => get_current_blog_id(),
-				'mainSite'            => is_main_site(),
-				'subdomain'           => $this->isSubdomain(),
-				'isWooCommerceActive' => $this->isWooCommerceActive(),
-				'isBBPressActive'     => class_exists( 'bbPress' ),
-				'staticHomePage'      => $isStaticHomePage ? $staticHomePage : false,
-				'staticBlogPage'      => $this->getBlogPageId(),
-				'staticBlogPageTitle' => get_the_title( $this->getBlogPageId() ),
-				'isDev'               => $this->isDev(),
-				'isLocal'             => $this->isLocalUrl( site_url() ),
-				'isSsl'               => is_ssl(),
-				'hasUrlTrailingSlash' => '/' === user_trailingslashit( '' ),
-				'permalinkStructure'  => get_option( 'permalink_structure' ),
-				'dateFormat'          => get_option( 'date_format' ),
-				'timeFormat'          => get_option( 'time_format' ),
-				'siteName'            => aioseo()->helpers->getWebsiteName()
+				'vueComponentsDefaults' => $this->getVueComponentsDefaults(),
 			],
-			'user'              => [
+			'user'               => [
 				'canManage'      => aioseo()->access->canManage(),
 				'capabilities'   => aioseo()->access->getAllCapabilities(),
 				'customRoles'    => $this->getCustomRoles(),
@@ -207,31 +191,28 @@ trait Vue {
 				'roles'          => $this->getUserRoles(),
 				'unfilteredHtml' => current_user_can( 'unfiltered_html' )
 			],
-			'plugins'           => $this->getPluginData(),
-			'postData'          => [
-				'postTypes'    => $this->getPublicPostTypes( false, false, true ),
-				'taxonomies'   => $this->getPublicTaxonomies( false, true ),
-				'archives'     => $this->getPublicPostTypes( false, true, true ),
-				'postStatuses' => $this->getPublicPostStatuses()
+			'plugins'            => $this->getPluginData(),
+			'postData'           => [
+				'postTypes'    => array_values( $this->getPublicPostTypes( false, false, true ) ),
+				'taxonomies'   => array_values( $this->getPublicTaxonomies( false, true ) ),
+				'archives'     => array_values( $this->getPublicPostTypes( false, true, true ) ),
+				'postStatuses' => array_values( $this->getPublicPostStatuses() )
 			],
-			'notifications'     => array_merge( Models\Notification::getNotifications( false ), [
+			'notifications'      => array_merge( Models\Notification::getNotifications( true ), [
 				'force' => $this->showNotificationsDrawer()
 			] ),
-			'addons'            => aioseo()->addons->getAddons(),
-			'features'          => aioseo()->features->getFeatures(),
-			'version'           => AIOSEO_VERSION,
-			'wpVersion'         => get_bloginfo( 'version' ),
-			'helpPanel'         => aioseo()->help->getDocs(),
-			'scheduledActions'  => [
+			'addons'             => aioseo()->addons->getAddons(),
+			'features'           => aioseo()->features->getFeatures(),
+			'version'            => AIOSEO_VERSION,
+			'wpVersion'          => get_bloginfo( 'version' ),
+			'phpVersion'         => PHP_VERSION,
+			'helpPanel'          => aioseo()->help->getDocs(),
+			'scheduledActions'   => [
 				'sitemaps' => []
 			],
-			'integration'       => $this->args['integration'],
-			'theme'             => [
+			'integration'        => $this->args['integration'],
+			'theme'              => [
 				'features' => aioseo()->helpers->getThemeFeatures()
-			],
-			'searchStatistics'  => [
-				'isConnected'        => aioseo()->searchStatistics->api->auth->isConnected(),
-				'sitemapsWithErrors' => aioseo()->searchStatistics->sitemap->getSitemapsWithErrors()
 			]
 		];
 	}
@@ -274,7 +255,7 @@ trait Vue {
 			'context'                        => 'post',
 			'tags'                           => aioseo()->tags->getDefaultPostTags( $postId ),
 			'id'                             => $postId,
-			'priority'                       => isset( $post->priority ) && 'default' !== $post->priority ? $post->priority : 'default',
+			'priority'                       => isset( $post->priority ) && null !== $post->priority ? (float) $post->priority : 'default',
 			'frequency'                      => ! empty( $post->frequency ) ? $post->frequency : 'default',
 			'permalink'                      => get_permalink( $postId ),
 			'editlink'                       => aioseo()->helpers->getPostEditLink( $postId ),
@@ -293,7 +274,7 @@ trait Vue {
 			'postStatus'                     => get_post_status( $postId ),
 			'postAuthor'                     => (int) $wpPost->post_author,
 			'isSpecialPage'                  => $this->isSpecialPage( $postId ),
-			'isPageAnalysisEligible'         => $this->isPageAnalysisEligible( $postId ),
+			'isTruSeoEligible'               => $this->isTruSeoEligible( $postId ),
 			'isStaticPostsPage'              => aioseo()->helpers->isStaticPostsPage(),
 			'isHomePage'                     => $postId === $staticHomePage,
 			'isWooCommercePageWithoutSchema' => $this->isWooCommercePageWithoutSchema( $postId ),
@@ -308,8 +289,8 @@ trait Vue {
 			'noimageindex'                   => ( (int) $post->robots_noimageindex ) === 0 ? false : true,
 			'noodp'                          => ( (int) $post->robots_noodp ) === 0 ? false : true,
 			'notranslate'                    => ( (int) $post->robots_notranslate ) === 0 ? false : true,
-			'maxSnippet'                     => null === $post->robots_max_snippet ? - 1 : (int) $post->robots_max_snippet,
-			'maxVideoPreview'                => null === $post->robots_max_videopreview ? - 1 : (int) $post->robots_max_videopreview,
+			'maxSnippet'                     => null === $post->robots_max_snippet ? -1 : (int) $post->robots_max_snippet,
+			'maxVideoPreview'                => null === $post->robots_max_videopreview ? -1 : (int) $post->robots_max_videopreview,
 			'maxImagePreview'                => $post->robots_max_imagepreview,
 			'modalOpen'                      => false,
 			'generalMobilePrev'              => false,
@@ -329,6 +310,7 @@ trait Vue {
 			'twitter_image_type'             => $post->twitter_image_type,
 			'twitter_title'                  => $post->twitter_title,
 			'twitter_description'            => $post->twitter_description,
+			'ai'                             => Models\Post::getDefaultAiOptions( $post->ai ),
 			'schema'                         => Models\Post::getDefaultSchemaOptions( $post->schema, aioseo()->helpers->getPost( $postId ) ),
 			'metaDefaults'                   => [
 				'title'       => aioseo()->meta->title->getPostTypeTitle( $postTypeObj->name ),
@@ -341,7 +323,8 @@ trait Vue {
 			'redirects'                      => [
 				'modalOpen' => false
 			],
-			'options'                        => $post->options
+			'options'                        => $post->options,
+			'maxAdditionalKeyphrases'        => 0,
 		];
 
 		if ( empty( $this->args['integration'] ) ) {
@@ -351,8 +334,8 @@ trait Vue {
 		if ( ! $post->exists() ) {
 			$oldPostMeta = aioseo()->migration->meta->getMigratedPostMeta( $postId );
 			foreach ( $oldPostMeta as $k => $v ) {
-				if ( preg_match( '#robots_.*#', $k ) ) {
-					$oldPostMeta[ preg_replace( '#robots_#', '', $k ) ] = $v;
+				if ( preg_match( '#robots_.*#', (string) $k ) ) {
+					$oldPostMeta[ preg_replace( '#robots_#', '', (string) $k ) ] = $v;
 					continue;
 				}
 				if ( 'canonical_url' === $k ) {
@@ -388,12 +371,21 @@ trait Vue {
 	 * @return void
 	 */
 	private function setSearchStatisticsData() {
-		if ( 'search-statistics' !== $this->args['page'] ) {
-			return;
+		$this->data['searchStatistics'] = [
+			'isConnected'        => aioseo()->searchStatistics->api->auth->isConnected(),
+			'sitemapsWithErrors' => aioseo()->searchStatistics->sitemap->getSitemapsWithErrors(),
+		];
+
+		if ( 'post' === $this->args['page'] ) {
+			$this->data['keywordRankTracker'] = aioseo()->searchStatistics->keywordRankTracker->getVueDataEdit();
 		}
 
-		$this->data['seoOverview']      = aioseo()->postSettings->getPostTypesOverview();
-		$this->data['searchStatistics'] = aioseo()->searchStatistics->getVueData();
+		if ( 'search-statistics' === $this->args['page'] ) {
+			$this->data['seoOverview']        = aioseo()->postSettings->getPostTypesOverview();
+			$this->data['searchStatistics']   = array_merge( $this->data['searchStatistics'], aioseo()->searchStatistics->getVueData() );
+			$this->data['keywordRankTracker'] = aioseo()->searchStatistics->keywordRankTracker->getVueData();
+			$this->data['indexStatus']        = aioseo()->searchStatistics->indexStatus->getVueData();
+		}
 	}
 
 	/**
@@ -496,7 +488,7 @@ trait Vue {
 	 */
 	private function setSeoRevisionsData() {
 		if ( 'post' === $this->args['page'] ) {
-			$this->data['seoRevisions'] = aioseo()->seoRevisions->getVueDataEdit();
+			$this->data['seoRevisions'] = aioseo()->seoRevisions->getVueDataEdit( $this->args['staticPostId'] ?? null );
 		}
 
 		if ( 'seo-revisions' === $this->args['page'] ) {
@@ -527,9 +519,6 @@ trait Vue {
 				'hasPhysicalRobots' => aioseo()->robotsTxt->hasPhysicalRobotsTxt(),
 				'rewriteExists'     => aioseo()->robotsTxt->rewriteRulesExist(),
 				'sitemapUrls'       => array_merge( aioseo()->sitemap->helpers->getSitemapUrlsPrefixed(), aioseo()->sitemap->helpers->extractSitemapUrlsFromRobotsTxt() )
-			];
-			$this->data['data']['logSizes']       = [
-				'badBotBlockerLog' => $this->convertFileSize( aioseo()->badBotBlocker->getLogSize() )
 			];
 			$this->data['data']['status']         = Tools\SystemStatus::getSystemStatusInfo();
 			$this->data['data']['htaccess']       = aioseo()->htaccess->getContents();
@@ -591,7 +580,7 @@ trait Vue {
 		$locale = [
 			'' => [
 				'domain' => $domain,
-				'lang'   => is_admin() && function_exists( 'get_user_locale' ) ? get_user_locale() : get_locale(),
+				'lang'   => is_admin() && function_exists( 'get_user_locale' ) ? get_user_locale() : get_locale()
 			],
 		];
 
@@ -606,7 +595,8 @@ trait Vue {
 
 			foreach ( $entry->translations as $translation ) {
 				// If any of the translated strings contains an HTML line break, we need to ignore it. Otherwise, logging into the admin breaks.
-				if ( preg_match( '/<br[\s\/\\\\]*>/', $translation ) ) {
+
+				if ( preg_match( '/<br[\s\/\\\\]*>/', (string) $translation ) ) {
 					continue 2;
 				}
 			}
@@ -616,6 +606,25 @@ trait Vue {
 		}
 
 		return $locale;
+	}
+
+	/**
+	 * Set Vue writing assistant data.
+	 *
+	 * @since 4.7.4
+	 *
+	 * @return void
+	 */
+	private function setWritingAssistantData() {
+		// Settings page or not a post screen.
+		if (
+			'settings' !== $this->args['page'] &&
+			! aioseo()->helpers->isScreenBase( 'post' )
+		) {
+			return;
+		}
+
+		$this->data['writingAssistantSettings'] = aioseo()->writingAssistant->helpers->getSettingsVueData();
 	}
 
 	/**
@@ -637,5 +646,112 @@ trait Vue {
 		}
 
 		return $showNotificationsDrawer;
+	}
+
+	/**
+	 * Set Vue breadcrumbs data.
+	 *
+	 * @since 4.8.3
+	 *
+	 * @return void
+	 */
+	private function setBreadcrumbsData() {
+		$isPostOrTermPage              = aioseo()->helpers->isScreenBase( 'post' ) || aioseo()->helpers->isScreenBase( 'term' );
+		$isCurrentPageUsingPageBuilder = 'post' === $this->args['page'] && ! empty( $this->args['integration'] );
+		$isSettingsPage                = ! empty( $this->args['page'] ) && 'settings' === $this->args['page'];
+		if ( ! $isSettingsPage && ! $isCurrentPageUsingPageBuilder && ! $isPostOrTermPage ) {
+			return;
+		}
+
+		$this->data['breadcrumbs']['defaultTemplate'] = aioseo()->helpers->encodeOutputHtml( aioseo()->breadcrumbs->frontend->getDefaultTemplate() );
+	}
+
+	/**
+	 * Set Vue SEO Analyzer data.
+	 *
+	 * @since 4.8.3
+	 *
+	 * @return void
+	 */
+	private function setSeoAnalyzerData() {
+		if ( 'seo-analysis' !== $this->args['page'] ) {
+			return;
+		}
+
+		$this->data['analyzer'] = aioseo()->seoAnalysis->getVueData();
+	}
+
+	/**
+	 * Returns the marketing site URL.
+	 *
+	 * @since 4.8.4
+	 *
+	 * @return string The marketing site URL.
+	 */
+	private function getMarketingSiteUrl() {
+		if ( defined( 'AIOSEO_MARKETING_SITE_URL' ) && AIOSEO_MARKETING_SITE_URL ) {
+			return AIOSEO_MARKETING_SITE_URL;
+		}
+
+		return 'https://aioseo.com/';
+	}
+
+	/**
+	 * Clean sensitive data.
+	 *
+	 * @since 4.8.7
+	 *
+	 * @return void
+	 */
+	protected function cleanSensitiveData() {
+		// Hide Semrush tokens.
+		if ( ! empty( $this->data['internalOptions']['integrations']['semrush']['accessToken'] ) ) {
+			$this->data['internalOptions']['integrations']['semrush']['accessToken'] = '*****************';
+		}
+
+		if ( ! empty( $this->data['internalOptions']['integrations']['semrush']['refreshToken'] ) ) {
+			$this->data['internalOptions']['integrations']['semrush']['refreshToken'] = '*****************';
+		}
+
+		// Hide AI tokens.
+		if ( ! empty( $this->data['internalOptions']['internal']['ai']['accessToken'] ) ) {
+			$this->data['internalOptions']['internal']['ai']['accessToken'] = '*****************';
+		}
+
+		// Hide Search Statistics tokens.
+		if ( ! empty( $this->data['internalOptions']['internal']['searchStatistics']['profile']['key'] ) ) {
+			$this->data['internalOptions']['internal']['searchStatistics']['profile']['key'] = '*****************';
+		}
+
+		if ( ! empty( $this->data['internalOptions']['internal']['searchStatistics']['profile']['token'] ) ) {
+			$this->data['internalOptions']['internal']['searchStatistics']['profile']['token'] = '*****************';
+		}
+
+		if ( ! empty( $this->data['internalOptions']['internal']['searchStatistics']['trustToken'] ) ) {
+			$this->data['internalOptions']['internal']['searchStatistics']['trustToken'] = '*****************';
+		}
+
+		// Hide connect token.
+		if ( ! empty( $this->data['internalOptions']['internal']['siteAnalysis']['connectToken'] ) ) {
+			$this->data['internalOptions']['internal']['siteAnalysis']['connectToken'] = '*****************';
+		}
+	}
+
+	/**
+	 * Returns default values and settings for Vue components. These settings can be customized
+	 * by a filter.
+	 *
+	 * @since 4.8.7
+	 *
+	 * @return array The default values for Vue components.
+	 */
+	private function getVueComponentsDefaults() {
+		$defaults = [
+			'fieldGroupRepeater' => [
+				'maxGroups' => 50
+			]
+		];
+
+		return apply_filters( 'aioseo_vue_components_defaults', $defaults );
 	}
 }

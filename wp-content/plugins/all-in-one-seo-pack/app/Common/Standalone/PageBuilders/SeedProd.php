@@ -78,7 +78,7 @@ class SeedProd extends Base {
 	public function isBuilderScreen() {
 		$currentScreen = aioseo()->helpers->getCurrentScreen();
 
-		return $currentScreen && preg_match( '/seedprod.*?_builder$/i', $currentScreen->base );
+		return $currentScreen && preg_match( '/seedprod.*?_builder$/i', (string) $currentScreen->base );
 	}
 
 	/**
@@ -140,7 +140,7 @@ class SeedProd extends Base {
 			return false;
 		}
 
-		$settings = ! empty( $_REQUEST['settings'] ) ? json_decode( wp_unslash( $_REQUEST['settings'] ) ) : false;
+		$settings = ! empty( $_REQUEST['settings'] ) ? json_decode( sanitize_text_field( wp_unslash( $_REQUEST['settings'] ) ) ) : false;
 		if ( empty( $settings ) || empty( $settings->aioseo_limit_modified_date ) ) {
 			return false;
 		}

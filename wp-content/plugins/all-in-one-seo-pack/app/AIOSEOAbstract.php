@@ -131,15 +131,6 @@ abstract class AIOSEOAbstract {
 	public $blocks = null;
 
 	/**
-	 * BadBotBlocker class instance.
-	 *
-	 * @since 4.2.7
-	 *
-	 * @var \AIOSEO\Plugin\Common\Tools\BadBotBlocker
-	 */
-	public $badBotBlocker = null;
-
-	/**
 	 * Breadcrumbs class instance.
 	 *
 	 * @since 4.2.7
@@ -349,9 +340,10 @@ abstract class AIOSEOAbstract {
 	/**
 	 * CategoryBase class instance.
 	 *
-	 * @since 4.2.7
+	 * @since   4.2.7
+	 * @version 4.7.1 Moved from Pro to Common.
 	 *
-	 * @var null|\AIOSEO\Plugin\Pro\Main\CategoryBase
+	 * @var null|\AIOSEO\Plugin\Common\Main\CategoryBase
 	 */
 	public $categoryBase = null;
 
@@ -570,4 +562,58 @@ abstract class AIOSEOAbstract {
 	 * @var \AIOSEO\Plugin\Common\QueryArgs\CrawlCleanup
 	 */
 	public $crawlCleanup = null;
+
+	/**
+	 * Search Cleanup class instance.
+	 *
+	 * @since 4.8.0
+	 *
+	 * @var \AIOSEO\Plugin\Common\SearchCleanup\SearchCleanup
+	 */
+	public $searchCleanup = null;
+
+	/**
+	 * EmailReports class instance.
+	 *
+	 * @since 4.7.2
+	 *
+	 * @var null|\AIOSEO\Plugin\Common\EmailReports\EmailReports
+	 */
+	public $emailReports = null;
+
+	/**
+	 * SEO Analysis class instance.
+	 *
+	 * @since 4.8.6
+	 *
+	 * @var \AIOSEO\Plugin\Pro\SeoAnalysis\SeoAnalysis
+	 */
+	public $seoAnalysis = null;
+
+	/**
+	 * ThirdParty class instance.
+	 *
+	 * @since 4.7.6
+	 *
+	 * @var \AIOSEO\Plugin\Common\ThirdParty\ThirdParty
+	 */
+	public $thirdParty = null;
+
+	/**
+	 * WritingAssistant class instance.
+	 *
+	 * @since 4.7.4
+	 *
+	 * @var \AIOSEO\Plugin\Common\WritingAssistant\WritingAssistant
+	 */
+	public $writingAssistant = null;
+
+	/**
+	 * Llms class instance.
+	 *
+	 * @since 4.8.4
+	 *
+	 * @var \AIOSEO\Plugin\Common\Llms\Llms
+	 */
+	public $llms = null;
 }

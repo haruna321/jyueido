@@ -124,19 +124,24 @@ class Addons {
 	public function getAddons( $flushCache = false ) {
 		require_once ABSPATH . 'wp-admin/includes/plugin.php';
 
-		$addons = aioseo()->core->cache->get( 'addons' );
+		$addons        = aioseo()->core->cache->get( 'addons' );
+		$defaultAddons = $this->getDefaultAddons();
 		if ( null === $addons || $flushCache ) {
 			$response = aioseo()->helpers->wpRemoteGet( $this->getAddonsUrl() );
 			if ( 200 === wp_remote_retrieve_response_code( $response ) ) {
-				$addons = json_decode( wp_remote_retrieve_body( $response ) );
+				$addons = json_decode( wp_remote_retrieve_body( $response ), true );
 			}
 
 			if ( ! $addons || ! empty( $addons->error ) ) {
-				$addons = $this->getDefaultAddons();
+				$addons = $defaultAddons;
 			}
 
 			aioseo()->core->cache->update( 'addons', $addons );
 		}
+
+		// Convert the addons array to objects using JSON. This is essential because we have lots of addons that rely on this to be an object, and changing it to an array would break them.
+
+		$addons = json_decode( wp_json_encode( $addons ) );
 
 		$installedPlugins = array_keys( get_plugins() );
 		foreach ( $addons as $key => $addon ) {
@@ -153,7 +158,69 @@ class Addons {
 			$addons[ $key ]->capability        = $this->getManageCapability( $addon->sku );
 			$addons[ $key ]->minimumVersion    = '0.0.0';
 			$addons[ $key ]->hasMinimumVersion = false;
+			$addons[ $key ]->featured          = $this->setFeatured( $addon );
 		}
+
+		return $this->sortAddons( $addons );
+	}
+
+	/**
+	 * Set the featured status for an addon.
+	 *
+	 * @since 4.6.9
+	 *
+	 * @param  object $addon The addon.
+	 * @return bool          The featured status.
+	 */
+	protected function setFeatured( $addon ) {
+		$defaultAddons = $this->getDefaultAddons();
+		$featured      = false;
+
+		// Find the addon in the default addons list and get the featured status.
+		foreach ( $defaultAddons as $defaultAddon ) {
+			if ( $addon->sku !== $defaultAddon['sku'] ) {
+				continue;
+			}
+
+			$featured = ! empty( $addon->featured )
+				? $addon->featured
+				: (
+					! empty( $defaultAddon['featured'] )
+						? $defaultAddon['featured']
+						: $featured
+					);
+			break;
+		}
+
+		return $featured;
+	}
+
+	/**
+	 * Sort the addons by moving the featured ones to the top.
+	 *
+	 * @since 4.6.9
+	 *
+	 * @param  array $addons The addons to sort.
+	 * @return array         The sorted addons.
+	 */
+	protected function sortAddons( $addons ) {
+		if ( ! is_array( $addons ) ) {
+			return $addons;
+		}
+
+		// Sort the addons by moving the featured ones to the top.
+		usort( $addons, function( $a, $b ) {
+			// Sort by featured value. It can be false, or numerical. If it's false, it will be moved to the bottom.
+			// If it's numerical, it will be moved to the top. Numbers will be sorted in descending order.
+			$featuredA = ! empty( $a->featured ) ? $a->featured : 0;
+			$featuredB = ! empty( $b->featured ) ? $b->featured : 0;
+
+			if ( $featuredA === $featuredB ) {
+				return 0;
+			}
+
+			return $featuredA > $featuredB ? -1 : 1;
+		} );
 
 		return $addons;
 	}
@@ -268,7 +335,7 @@ class Addons {
 
 		$keys = array_keys( $plugins );
 		foreach ( $keys as $key ) {
-			if ( preg_match( '|^' . $sku . '|', $key ) ) {
+			if ( preg_match( '|^' . $sku . '|', (string) $key ) ) {
 				return $key;
 			}
 		}
@@ -442,7 +509,12 @@ class Addons {
 	 * @return bool True if yes, false if not.
 	 */
 	public function canInstall() {
-		if ( ! current_user_can( 'install_plugins' ) ) {
+		if (
+			function_exists( 'wp_get_current_user' ) &&
+			is_user_logged_in() &&
+			! current_user_can( 'install_plugins' ) &&
+			! aioseo()->helpers->isDoingWpCli()
+		) {
 			return false;
 		}
 
@@ -462,7 +534,12 @@ class Addons {
 	 * @return bool True if yes, false if not.
 	 */
 	public function canUpdate() {
-		if ( ! current_user_can( 'update_plugins' ) && ! aioseo()->helpers->isDoingWpCli() ) {
+		if (
+			function_exists( 'wp_get_current_user' ) &&
+			is_user_logged_in() &&
+			! current_user_can( 'update_plugins' ) &&
+			! aioseo()->helpers->isDoingWpCli()
+		) {
 			return false;
 		}
 
@@ -482,7 +559,12 @@ class Addons {
 	 * @return bool True if yes, false if not.
 	 */
 	public function canActivate() {
-		if ( ! current_user_can( 'activate_plugins' ) ) {
+		if (
+			function_exists( 'wp_get_current_user' ) &&
+			is_user_logged_in() &&
+			! current_user_can( 'activate_plugins' ) &&
+			! aioseo()->helpers->isDoingWpCli()
+		) {
 			return false;
 		}
 
@@ -586,7 +668,7 @@ class Addons {
 		$addons = $this->getDefaultAddons();
 		$addon  = [];
 		foreach ( $addons as $a ) {
-			if ( $a->sku === $sku ) {
+			if ( $a['sku'] === $sku ) {
 				$addon = $a;
 			}
 		}
@@ -633,7 +715,8 @@ class Addons {
 				'canUpdate'          => false,
 				'capability'         => $this->getManageCapability( 'aioseo-eeat' ),
 				'minimumVersion'     => '0.0.0',
-				'hasMinimumVersion'  => false
+				'hasMinimumVersion'  => false,
+				'featured'           => 300
 			],
 			[
 				'sku'                => 'aioseo-redirects',
@@ -665,7 +748,8 @@ class Addons {
 				'canUpdate'          => false,
 				'capability'         => $this->getManageCapability( 'aioseo-redirects' ),
 				'minimumVersion'     => '0.0.0',
-				'hasMinimumVersion'  => false
+				'hasMinimumVersion'  => false,
+				'featured'           => 200
 			],
 			[
 				'sku'                => 'aioseo-link-assistant',
@@ -696,7 +780,8 @@ class Addons {
 				'canUpdate'          => false,
 				'capability'         => $this->getManageCapability( 'aioseo-link-assistant' ),
 				'minimumVersion'     => '0.0.0',
-				'hasMinimumVersion'  => false
+				'hasMinimumVersion'  => false,
+				'featured'           => 100
 			],
 			[
 				'sku'                => 'aioseo-video-sitemap',
@@ -902,7 +987,7 @@ class Addons {
 				'minimumVersion'     => '0.0.0',
 				'hasMinimumVersion'  => false
 			]
-		] ) );
+		] ), true );
 	}
 
 	/**

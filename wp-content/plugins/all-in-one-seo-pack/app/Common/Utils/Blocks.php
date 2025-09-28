@@ -42,7 +42,7 @@ class Blocks {
 	 * @return \WP_Block_Type|false       The registered block type on success, or false on failure.
 	 */
 	public function registerBlock( $slug = '', $args = [] ) {
-		global $wp_version;
+		global $wp_version; // phpcs:ignore Squiz.NamingConventions.ValidVariableName
 
 		if ( ! strpos( $slug, '/' ) ) {
 			$slug = 'aioseo/' . $slug;
@@ -53,7 +53,7 @@ class Blocks {
 		}
 
 		// Check if the block requires a minimum WP version.
-		if ( ! empty( $args['wp_min_version'] ) && version_compare( $wp_version, $args['wp_min_version'], '>' ) ) {
+		if ( ! empty( $args['wp_min_version'] ) && version_compare( $wp_version, $args['wp_min_version'], '>' ) ) { // phpcs:ignore Squiz.NamingConventions.ValidVariableName
 			return false;
 		}
 
@@ -93,6 +93,7 @@ class Blocks {
 			 * This is needed because this asset is not loaded on widgets and customizer screens,
 			 * {@see \AIOSEO\Plugin\Common\Admin\PostSettings::enqueuePostSettingsAssets}.
 			 *
+
 			 */
 			aioseo()->core->assets->load( $postSettingJsAsset, [], aioseo()->helpers->getVueData() );
 		}
@@ -140,8 +141,16 @@ class Blocks {
 	 *
 	 * @return bool In gutenberg.
 	 */
-	public function isGBEditor() {
-		return defined( 'REST_REQUEST' ) && REST_REQUEST && ! empty( $_REQUEST['context'] ) && 'edit' === $_REQUEST['context']; // phpcs:ignore HM.Security.NonceVerification.Recommended
+	public function isRenderingBlockInEditor() {
+		// phpcs:disable HM.Security.NonceVerification.Recommended, WordPress.Security.NonceVerification.Recommended
+		if ( ! defined( 'REST_REQUEST' ) || ! REST_REQUEST ) {
+			return false;
+		}
+
+		$context = isset( $_REQUEST['context'] ) ? sanitize_text_field( wp_unslash( $_REQUEST['context'] ) ) : '';
+		// phpcs:enable HM.Security.NonceVerification.Recommended, WordPress.Security.NonceVerification.Recommended
+
+		return 'edit' === $context;
 	}
 
 	/**

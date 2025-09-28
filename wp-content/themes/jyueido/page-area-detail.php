@@ -144,7 +144,7 @@
       </script>
 
     <div class="btn-container-1 g-t-0 add_mb20">
-      <a href="./items/" class="btn-1-extended btn-arrow-circle-1"><b>その他の買取品目一覧</b></a>
+      <a href="<?php echo $site_url; ?>/items/" class="btn-1-extended btn-arrow-circle-1"><b>その他の買取品目一覧</b></a>
     </div>
   </div>
 </div>
@@ -200,6 +200,9 @@
         </div>
       </div>
     <?php endforeach; ?>
+    <div class="btn-container-1 g-t-0 add_mb20">
+      <a href="<?php echo $site_url; ?>/achievements-area/<?php echo $cfs->get('achievements-link'); ?>" class="btn-1-extended btn-arrow-circle-1"><b><?php the_title(); ?>での買取実績一覧</b></a>
+    </div>
   </div>
   <div class="voice-wrap">
     <h2 class="title-1"><?php the_title(); ?>のお客様の声</h2>

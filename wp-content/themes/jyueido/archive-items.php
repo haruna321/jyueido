@@ -5,7 +5,7 @@
   <h3>骨董品買取品目・実績一覧</h3>
 <div class="container p-t">
 
-<?php get_template_part( 'mod-items-categories' ); ?>
+ <?php get_template_part( 'mod-items-categories' ); ?>
 
 <!-- <div class="row box-items-container">
 <?php
@@ -49,12 +49,8 @@ if( $query->have_posts() ) : while( $query->have_posts() ) : $query->the_post();
 </div>
 <?php endif;
 wp_reset_postdata(); // クエリのリセット ?>
-<script>
-$('.box-item').matchHeight();
-</script>
-</div> -->
 
-</div>
+</div> -->
 </div>
 
 

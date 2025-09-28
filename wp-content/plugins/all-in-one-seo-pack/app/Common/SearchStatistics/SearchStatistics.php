@@ -49,15 +49,35 @@ class SearchStatistics {
 	public $notices;
 
 	/**
+	 * Holds the instance of the Keyword Rank Tracker class.
+	 *
+	 * @since 4.7.0
+	 *
+	 * @var KeywordRankTracker
+	 */
+	public $keywordRankTracker;
+
+	/**
+	 * Holds the instance of the Index Status class.
+	 *
+	 * @since 4.8.2
+	 *
+	 * @var IndexStatus
+	 */
+	public $indexStatus;
+
+	/**
 	 * Class constructor.
 	 *
 	 * @since 4.3.0
 	 */
 	public function __construct() {
-		$this->api     = new Api\Api();
-		$this->site    = new Site();
-		$this->sitemap = new Sitemap();
-		$this->notices = new Notices();
+		$this->api                = new Api\Api();
+		$this->site               = new Site();
+		$this->sitemap            = new Sitemap();
+		$this->notices            = new Notices();
+		$this->keywordRankTracker = new KeywordRankTracker();
+		$this->indexStatus        = new IndexStatus();
 	}
 
 	/**
@@ -332,6 +352,49 @@ class SearchStatistics {
 			]
 		];
 
+		// Get the 10 most recent posts.
+		$recentPosts = aioseo()->db->db->get_results(
+			sprintf(
+				'SELECT ID, post_title FROM %1$s WHERE post_status = "publish" AND post_type = "post" ORDER BY post_date DESC LIMIT 10',
+				aioseo()->db->db->posts
+			)
+		);
+
+		// Loop through the default page rows and update the key with the permalink from the most recent posts.
+		$i = 0;
+		foreach ( $pageRows as $key => $pageRow ) {
+			// Get the permalink of the recent post that matches the $i index.
+			$permalink = isset( $recentPosts[ $i ] ) ? get_permalink( $recentPosts[ $i ]->ID ) : '';
+
+			// If we don't have a permalink, continue to the next row.
+			if ( empty( $permalink ) ) {
+				continue;
+			}
+
+			// Remove the domain from the permalink by parsing the URL and getting the path.
+			$permalink = wp_parse_url( $permalink, PHP_URL_PATH );
+
+			// If the permalink already exists, continue to the next row.
+			if ( isset( $pageRows[ $permalink ] ) ) {
+				// Update the objectId and objectTitle with the recent post ID and title.
+				$pageRows[ $permalink ]['objectId']    = $recentPosts[ $i ]->ID;
+				$pageRows[ $permalink ]['objectTitle'] = $recentPosts[ $i ]->post_title;
+
+				continue;
+			}
+
+			$pageRows[ $permalink ] = $pageRows[ $key ];
+
+			// Remove the old key.
+			unset( $pageRows[ $key ] );
+
+			// Update the objectId and objectTitle with the recent post ID and title.
+			$pageRows[ $permalink ]['objectId']    = $recentPosts[ $i ]->ID;
+			$pageRows[ $permalink ]['objectTitle'] = $recentPosts[ $i ]->post_title;
+
+			$i++;
+		}
+
 		return [
 			'statistics' => [
 				'ctr'         => '0.74',
@@ -448,8 +511,8 @@ class SearchStatistics {
 					'rows'              => $pageRows,
 					'totals'            => [
 						'page'  => 1,
-						'pages' => 292,
-						'total' => 2914
+						'pages' => 1,
+						'total' => 10
 					],
 					'filters'           => [
 						[
@@ -481,10 +544,10 @@ class SearchStatistics {
 					]
 				],
 				'topLosing'  => [
-					'rows' => []
+					'rows' => $pageRows
 				],
 				'topWinning' => [
-					'rows' => []
+					'rows' => $pageRows
 				]
 			]
 		];
@@ -495,10 +558,10 @@ class SearchStatistics {
 	 *
 	 * @since 4.3.0
 	 *
-	 * @param  array $dateRange The date range.
-	 * @return array            The data for the Keywords.
+	 * @param  array $args The arguments.
+	 * @return array       The data for the Keywords.
 	 */
-	protected function getKeywordsData( $dateRange = [] ) { // phpcs:ignore VariableAnalysis.CodeAnalysis.VariableAnalysis.UnusedVariable
+	public function getKeywordsData( $args = [] ) { // phpcs:ignore VariableAnalysis.CodeAnalysis.VariableAnalysis.UnusedVariable
 		$keywordsRows = [
 			[
 				'ctr'         => '4.89',
@@ -647,8 +710,8 @@ class SearchStatistics {
 				'rows'    => $keywordsRows,
 				'totals'  => [
 					'page'  => 1,
-					'pages' => 2500,
-					'total' => 25000
+					'pages' => 1,
+					'total' => 10
 				],
 				'filters' => [
 					[
@@ -668,8 +731,8 @@ class SearchStatistics {
 					]
 				]
 			],
-			'topLosing'             => [],
-			'topWinning'            => [],
+			'topLosing'             => $keywordsRows,
+			'topWinning'            => $keywordsRows,
 			'topKeywords'           => $keywordsRows,
 			'distribution'          => [
 				'top3'       => '6.86',
@@ -780,14 +843,25 @@ class SearchStatistics {
 	}
 
 	/**
+	 * Returns the content performance data.
+	 *
+	 * @since 4.7.2
+	 *
+	 * @return array The content performance data.
+	 */
+	public function getSeoStatisticsData( $args = [] ) { // phpcs:ignore VariableAnalysis.CodeAnalysis.VariableAnalysis.UnusedVariable
+		return [];
+	}
+
+	/**
 	 * Returns the Content Rankings data.
 	 *
 	 * @since 4.3.6
 	 *
-	 * @param  array $dateRange The date range.
-	 * @return array            The Content Rankings data.
+	 * @param  array $args The arguments.
+	 * @return array       The Content Rankings data.
 	 */
-	protected function getContentRankingsData( $dateRange = [] ) { // phpcs:ignore VariableAnalysis.CodeAnalysis.VariableAnalysis.UnusedVariable
+	public function getContentRankingsData( $args = [] ) { // phpcs:ignore VariableAnalysis.CodeAnalysis.VariableAnalysis.UnusedVariable
 		return [
 			'paginated' => [
 				'rows'              => [
@@ -1074,8 +1148,8 @@ class SearchStatistics {
 				],
 				'totals'            => [
 					'page'  => 1,
-					'pages' => 215,
-					'total' => 4296
+					'pages' => 1,
+					'total' => 10
 				],
 				'additionalFilters' => [
 					[

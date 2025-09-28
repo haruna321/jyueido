@@ -1,12 +1,12 @@
 <?php
 namespace AIOSEO\Plugin\Common\Traits\Helpers;
 
-use AIOSEO\Plugin\Common\Utils;
-
 // Exit if accessed directly.
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
+
+use AIOSEO\Plugin\Common\Utils;
 
 /**
  * Contains all WP related helper methods.
@@ -31,9 +31,9 @@ trait Wp {
 	 * @return array An array of user roles.
 	 */
 	public function getUserRoles() {
-		global $wp_roles;
+		global $wp_roles; // phpcs:ignore Squiz.NamingConventions.ValidVariableName
 
-		$wpRoles = $wp_roles;
+		$wpRoles = $wp_roles; // phpcs:ignore Squiz.NamingConventions.ValidVariableName
 		if ( ! is_object( $wpRoles ) ) {
 			// Don't assign this to the global because otherwise WordPress won't override it.
 			$wpRoles = new \WP_Roles();
@@ -167,9 +167,14 @@ trait Wp {
 	 * @param  bool  $namesOnly       Whether only the names should be returned.
 	 * @param  bool  $hasArchivesOnly Whether to only include post types which have archives.
 	 * @param  bool  $rewriteType     Whether to rewrite the type slugs.
+	 * @param  array $args            Additional arguments.
 	 * @return array                  List of public post types.
 	 */
-	public function getPublicPostTypes( $namesOnly = false, $hasArchivesOnly = false, $rewriteType = false ) {
+	public function getPublicPostTypes( $namesOnly = false, $hasArchivesOnly = false, $rewriteType = false, $args = [] ) {
+		$args = array_merge( [
+			'include' => [] // Post types to include.
+		], $args );
+
 		$postTypes   = [];
 		$postTypeObjects = get_post_types( [], 'objects' );
 		foreach ( $postTypeObjects as $postTypeObject ) {
@@ -183,7 +188,11 @@ trait Wp {
 			}
 		}
 
-		return apply_filters( 'aioseo_public_post_types', $postTypes, $namesOnly, $hasArchivesOnly );
+		if ( isset( aioseo()->standalone->buddyPress ) ) {
+			aioseo()->standalone->buddyPress->maybeAddPostTypes( $postTypes, $namesOnly, $hasArchivesOnly, $args );
+		}
+
+		return apply_filters( 'aioseo_public_post_types', $postTypes, $namesOnly, $hasArchivesOnly, $args );
 	}
 
 	/**
@@ -218,7 +227,11 @@ trait Wp {
 		}
 
 		if ( 'attachment' === $postTypeObject->name ) {
-			$postTypeObject->label = __( 'Attachments', 'all-in-one-seo-pack' );
+			// We have to check if the 'init' action has been fired to avoid a PHP notice
+			// in WP 6.7+ due to loading translations too early.
+			if ( did_action( 'init' ) ) {
+				$postTypeObject->label = __( 'Attachments', 'all-in-one-seo-pack' );
+			}
 		}
 
 		if ( 'product' === $postTypeObject->name && $this->isWooCommerceActive() ) {
@@ -235,11 +248,11 @@ trait Wp {
 			'label'        => ucwords( $postTypeObject->label ),
 			'singular'     => ucwords( $postTypeObject->labels->singular_name ),
 			'icon'         => $postTypeObject->menu_icon,
-			'hasExcerpt'   => post_type_supports( $postTypeObject->name, 'excerpt' ),
 			'hasArchive'   => $postTypeObject->has_archive,
 			'hierarchical' => $postTypeObject->hierarchical,
 			'taxonomies'   => get_object_taxonomies( $name ),
-			'slug'         => isset( $postTypeObject->rewrite['slug'] ) ? $postTypeObject->rewrite['slug'] : $name
+			'slug'         => isset( $postTypeObject->rewrite['slug'] ) ? $postTypeObject->rewrite['slug'] : $name,
+			'supports'     => get_all_post_type_supports( $name )
 		];
 	}
 
@@ -260,7 +273,11 @@ trait Wp {
 
 		$taxObjects = get_taxonomies( [], 'objects' );
 		foreach ( $taxObjects as $taxObject ) {
-			if ( empty( $taxObject->label ) || ! is_taxonomy_viewable( $taxObject ) ) {
+			if (
+				empty( $taxObject->label ) ||
+				! is_taxonomy_viewable( $taxObject ) ||
+				aioseo()->helpers->isWooCommerceProductAttribute( $taxObject->name )
+			) {
 				continue;
 			}
 
@@ -268,15 +285,6 @@ trait Wp {
 				'product_shipping_class',
 				'post_format'
 			], true ) ) {
-				continue;
-			}
-
-			// We need to exclude product attributes from this list as well.
-			if (
-				'pa_' === substr( $taxObject->name, 0, 3 ) &&
-				'manage_product_terms' === $taxObject->cap->manage_terms &&
-				! apply_filters( 'aioseo_woocommerce_product_attributes', false )
-			) {
 				continue;
 			}
 
@@ -290,9 +298,9 @@ trait Wp {
 				$name = '_aioseo_type';
 			}
 
-			global $wp_taxonomies;
-			$taxonomyPostTypes = ! empty( $wp_taxonomies[ $name ] )
-				? $wp_taxonomies[ $name ]->object_type
+			global $wp_taxonomies; // phpcs:ignore Squiz.NamingConventions.ValidVariableName
+			$taxonomyPostTypes = ! empty( $wp_taxonomies[ $name ] ) // phpcs:ignore Squiz.NamingConventions.ValidVariableName
+				? $wp_taxonomies[ $name ]->object_type // phpcs:ignore Squiz.NamingConventions.ValidVariableName
 				: [];
 
 			$taxonomies[] = [
@@ -306,6 +314,26 @@ trait Wp {
 				'restBase'           => ( $taxObject->rest_base ) ? $taxObject->rest_base : $taxObject->name,
 				'postTypes'          => $taxonomyPostTypes
 			];
+		}
+
+		if ( $this->isWooCommerceActive() ) {
+			// We inject a fake one for WooCommerce product attributes so that we can show a single set of settings
+			// instead of having to duplicate them for each attribute.
+			if ( $namesOnly ) {
+				$taxonomies[] = 'product_attributes';
+			} else {
+				$taxonomies[] = [
+					'name'               => 'product_attributes',
+					'label'              => __( 'Product Attributes', 'all-in-one-seo-pack' ),
+					'singular'           => __( 'Product Attribute', 'all-in-one-seo-pack' ),
+					'icon'               => 'dashicons-products',
+					'hierarchical'       => true,
+					'slug'               => 'product_attributes',
+					'primaryTermSupport' => true,
+					'restBase'           => 'product_attributes_class',
+					'postTypes'          => [ 'product' ]
+				];
+			}
 		}
 
 		return apply_filters( 'aioseo_public_taxonomies', $taxonomies, $namesOnly );
@@ -329,10 +357,12 @@ trait Wp {
 		foreach ( $roles as $role ) {
 			$rolesWhere[] = '(um.meta_key = \'' . aioseo()->core->db->db->prefix . 'capabilities\' AND um.meta_value LIKE \'%\"' . $role . '\"%\')';
 		}
-		$usersTableName = aioseo()->core->db->db->users; // We get the table name from WPDB since multisites share the same table.
-		$dbUsers        = aioseo()->core->db->start( "$usersTableName as u", true )
+		// We get the table name from WPDB since multisites share the same table.
+		$usersTableName    = aioseo()->core->db->db->users;
+		$usermetaTableName = aioseo()->core->db->db->usermeta;
+		$dbUsers           = aioseo()->core->db->start( "$usersTableName as u", true )
 			->select( 'u.ID, u.display_name, u.user_nicename, u.user_email' )
-			->join( 'usermeta as um', 'u.ID = um.user_id' )
+			->join( "$usermetaTableName as um", 'u.ID = um.user_id', '', true )
 			->whereRaw( '(' . implode( ' OR ', $rolesWhere ) . ')' )
 			->orderBy( 'u.user_nicename' )
 			->run()
@@ -470,10 +500,10 @@ trait Wp {
 	 *
 	 * @since 4.0.0
 	 *
-	 * @param  string $type The parent object type ("postTypes" or "taxonomies").
+	 * @param  string $type The parent object type ("postTypes", "archives", "taxonomies").
 	 * @return array        A list of noindexed objects types.
 	 */
-	private function getNoindexedObjects( $type ) {
+	public function getNoindexedObjects( $type ) {
 		$noindexed = [];
 		foreach ( aioseo()->dynamicOptions->searchAppearance->$type->all() as $name => $object ) {
 			if (
@@ -751,13 +781,13 @@ trait Wp {
 
 		$post = aioseo()->helpers->getPost( $postId );
 		if ( ! is_a( $post, 'WP_Post' ) ) {
-			$titles[ $postId ] = __( '(no title)' ); // phpcs:ignore AIOSEO.Wp.I18n.MissingArgDomain
+			$titles[ $postId ] = __( '(no title)', 'default' ); // phpcs:ignore AIOSEO.Wp.I18n.TextDomainMismatch, WordPress.WP.I18n.TextDomainMismatch
 
 			return $titles[ $postId ];
 		}
 
 		$title = $post->post_title;
-		$title = $title ? $title : __( '(no title)' ); // phpcs:ignore AIOSEO.Wp.I18n.MissingArgDomain
+		$title = $title ? $title : __( '(no title)', 'default' ); // phpcs:ignore AIOSEO.Wp.I18n.TextDomainMismatch, WordPress.WP.I18n.TextDomainMismatch
 
 		$titles[ $postId ] = aioseo()->helpers->decodeHtmlEntities( $title );
 
@@ -826,9 +856,9 @@ trait Wp {
 	 * @return bool          Whether the legacy widget can be registered.
 	 */
 	public function canRegisterLegacyWidget( $idBase ) {
-		global $wp_version;
+		global $wp_version; // phpcs:ignore Squiz.NamingConventions.ValidVariableName
 		if (
-			version_compare( $wp_version, '5.8', '<' ) ||
+			version_compare( $wp_version, '5.8', '<' ) || // phpcs:ignore Squiz.NamingConventions.ValidVariableName
 			is_active_widget( false, false, $idBase ) ||
 			aioseo()->standalone->pageBuilderIntegrations['elementor']->isPluginActive()
 		) {
@@ -836,5 +866,188 @@ trait Wp {
 		}
 
 		return false;
+	}
+
+	/**
+	 * Parses blocks for a given post.
+	 *
+	 * @since 4.6.8
+	 *
+	 * @param  \WP_Post|int $post          The post or post ID.
+	 * @param  bool         $flattenBlocks Whether to flatten the blocks.
+	 * @return array                       The parsed blocks.
+	 */
+	public function parseBlocks( $post, $flattenBlocks = true ) {
+		if ( ! is_a( $post, 'WP_Post' ) ) {
+			$post = aioseo()->helpers->getPost( $post );
+		}
+
+		static $parsedBlocks = [];
+		if ( isset( $parsedBlocks[ $post->ID ] ) ) {
+			return $parsedBlocks[ $post->ID ];
+		}
+
+		$parsedBlocks = parse_blocks( $post->post_content );
+
+		if ( $flattenBlocks ) {
+			$parsedBlocks = $this->flattenBlocks( $parsedBlocks );
+		}
+
+		$parsedBlocks[ $post->ID ] = $parsedBlocks;
+
+		return $parsedBlocks[ $post->ID ];
+	}
+
+	/**
+	 * Flattens the given blocks.
+	 *
+	 * @since 4.6.8
+	 *
+	 * @param  array $blocks The blocks.
+	 * @return array         The flattened blocks.
+	 */
+	public function flattenBlocks( $blocks ) {
+		$flattenedBlocks = [];
+
+		foreach ( $blocks as $block ) {
+			if ( ! empty( $block['innerBlocks'] ) ) {
+				// Flatten inner blocks first.
+				$innerBlocks = $this->flattenBlocks( $block['innerBlocks'] );
+				unset( $block['innerBlocks'] );
+
+				// Add the current block to the result.
+				$flattenedBlocks[] = $block;
+
+				// Add the flattened inner blocks to the result.
+				$flattenedBlocks = array_merge( $flattenedBlocks, $innerBlocks );
+			} else {
+				// If no inner blocks, just add the block to the result.
+				$flattenedBlocks[] = $block;
+			}
+		}
+
+		return $flattenedBlocks;
+	}
+
+	/**
+	 * Checks if the Classic eEditor is active and if the Block Editor is disabled in its settings.
+	 *
+	 * @since 4.7.3
+	 *
+	 * @return bool Whether the Classic Editor is active.
+	 */
+	public function isClassicEditorActive() {
+		include_once ABSPATH . 'wp-admin/includes/plugin.php';
+
+		if ( ! is_plugin_active( 'classic-editor/classic-editor.php' ) ) {
+			return false;
+		}
+
+		return 'classic' === get_option( 'classic-editor-replace' );
+	}
+
+	/**
+	 * Redirects to a 404 Not Found page if the sitemap is disabled.
+	 *
+	 * @since 4.0.0
+	 * @version 4.8.0 Moved from the Sitemap class.
+	 *
+	 * @return void
+	 */
+	public function notFoundPage() {
+		global $wp_query; // phpcs:ignore Squiz.NamingConventions.ValidVariableName
+		$wp_query->set_404(); // phpcs:ignore Squiz.NamingConventions.ValidVariableName
+		status_header( 404 );
+		include_once get_404_template();
+		exit;
+	}
+
+	/**
+	 * Retrieves the post type labels for the given post type.
+	 *
+	 * @since 4.8.2
+	 *
+	 * @param  string $postType The name of a registered post type.
+	 * @return object           Object with all the labels as member variables.
+	 */
+	public function getPostTypeLabels( $postType ) {
+		static $postTypeLabels = [];
+		if ( ! isset( $postTypeLabels[ $postType ] ) ) {
+			$postTypeObject = get_post_type_object( $postType );
+			if ( ! is_a( $postTypeObject, 'WP_Post_Type' ) ) {
+				return null;
+			}
+
+			$postTypeLabels[ $postType ] = get_post_type_labels( $postTypeObject );
+		}
+
+		return $postTypeLabels[ $postType ];
+	}
+
+	/**
+	 * Cleans the slug of the current request before we use it.
+	 *
+	 * @since 4.8.4
+	 *
+	 * @param  string $slug The slug.
+	 * @return string       The cleaned slug.
+	 */
+	public function cleanSlug( $slug ) {
+		$slug = strtolower( $slug );
+		$slug = aioseo()->helpers->unleadingSlashIt( $slug );
+		$slug = untrailingslashit( $slug );
+
+		return $slug;
+	}
+
+	/**
+	 * Returns the scannable post types.
+	 *
+	 * @since 4.8.6
+	 *
+	 * @return array The scannable post types.
+	 */
+	public function getScannablePostTypes() {
+		static $scannablePostTypes = null;
+		if ( null !== $scannablePostTypes ) {
+			return $scannablePostTypes;
+		}
+
+		// We exclude these post types to optimize performance.
+		$nonSupportedPostTypes = [ 'attachment' ];
+		$scannablePostTypes    = array_diff(
+			$this->getPublicPostTypes( true ),
+			$nonSupportedPostTypes
+		);
+
+		return $scannablePostTypes;
+	}
+
+	/**
+	 * Returns the user data.
+	 *
+	 * @since 4.8.7
+	 *
+	 * @param  int $userId The user ID.
+	 * @return \WP_User|null The user data.
+	 */
+	public function getUserData( $userId ) {
+		$userData = get_userdata( $userId );
+		if ( ! is_a( $userData, 'WP_User' ) ) {
+			return null;
+		}
+
+		$toUnset = [
+			'user_pass',
+			'user_activation_key'
+		];
+
+		foreach ( $toUnset as $key ) {
+			if ( isset( $userData->$key ) ) {
+				unset( $userData->$key );
+			}
+		}
+
+		return $userData;
 	}
 }

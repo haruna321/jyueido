@@ -1,6 +1,52 @@
 Changelog
 ==========
 
+#### 3.4.4 - Aug 07, 2025
+
+Periodic compatibility check with WordPress nightly.
+
+
+#### 3.4.3 - Jun 24, 2025
+
+- Rebuild client-side assets with latest Browserslist.
+- Optimize SVG icon for admin menu.
+- Remove newsletter sign-up section from admin pages.
+
+
+#### 3.4.2 - Apr 29, 2025
+
+- Fix HTML showing because of escaped translation text.
+
+
+### 3.4.1 - Mar 24, 2025
+
+- Bump required PHP version to 7.4 or higher.
+- Initialize boxes at document.DOMContentLoaded instead of window.load event.
+
+
+#### 3.4.0 - Jan 03, 2025 
+
+- Remove deprecated Bootstrapper class.
+- Add link to https://my.boxzillaplugin.com when trying to activate an expired license.
+- Bump tested WordPress version.
+
+
+#### 3.3.3 - Oct 07, 2024
+
+- Fix unclosed element on plugins overview page, breaking the table layout.
+- Bump license to GPL v3 or higher.
+- Bump required PHP version to 7.2 or higher.
+
+
+#### 3.3.2 - Oct 02, 2024
+
+- The Boxzilla script itself is now deferred for improved client-side performance.
+- You can now use the Boxzilla JS API before the script has fully loaded. 
+- Minor server side performance improvements by getting rid of unnecessary sprintf calls or string copies.
+- All i18n function call return values are now HTML escaped.
+- Verify `Jetpack::is_module_active` exists before method is called.
+
+
 #### 3.3.1 - May 17, 2024
 
 - Minor performance improvements to plugin bootstrapping and autoloader implementation.

@@ -53,7 +53,7 @@ class SetupWizard {
 		}
 
 		// Only do this for single site installs.
-		if ( isset( $_GET['activate-multi'] ) || is_network_admin() ) { // phpcs:ignore HM.Security.NonceVerification.Recommended
+		if ( isset( $_GET['activate-multi'] ) || is_network_admin() ) { // phpcs:ignore HM.Security.NonceVerification.Recommended, WordPress.Security.NonceVerification.Recommended
 			return;
 		}
 
@@ -100,8 +100,10 @@ class SetupWizard {
 		// Allow plugins to disable the setup wizard
 		// Check if current user is allowed to save settings.
 		if (
-			! isset( $_GET['page'] ) || // phpcs:ignore HM.Security.NonceVerification.Recommended
-			'aioseo-setup-wizard' !== sanitize_text_field( wp_unslash( $_GET['page'] ) ) || // phpcs:ignore HM.Security.NonceVerification.Recommended
+			// phpcs:disable HM.Security.NonceVerification.Recommended, WordPress.Security.NonceVerification.Recommended
+			! isset( $_GET['page'] ) ||
+			'aioseo-setup-wizard' !== sanitize_text_field( wp_unslash( $_GET['page'] ) ) ||
+			// phpcs:enable
 			! current_user_can( aioseo()->admin->getPageRequiredCapability( 'aioseo-setup-wizard' ) )
 		) {
 			return;
@@ -143,6 +145,7 @@ class SetupWizard {
 	public function enqueueScripts() {
 		// We don't want any plugin adding notices to our screens. Let's clear them out here.
 		remove_all_actions( 'admin_notices' );
+		remove_all_actions( 'network_admin_notices' );
 		remove_all_actions( 'all_admin_notices' );
 
 		aioseo()->core->assets->load( 'src/vue/standalone/setup-wizard/main.js', [], aioseo()->helpers->getVueData( 'setup-wizard' ) );

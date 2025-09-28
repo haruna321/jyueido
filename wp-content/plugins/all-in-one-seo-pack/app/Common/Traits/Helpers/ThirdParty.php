@@ -17,10 +17,10 @@ trait ThirdParty {
 	 *
 	 * @since 4.0.0
 	 *
-	 * @return boolean Whether WooCommerce is active.
+	 * @return bool Whether WooCommerce is active.
 	 */
 	public function isWooCommerceActive() {
-		return class_exists( 'woocommerce' );
+		return class_exists( 'WooCommerce' );
 	}
 
 	/**
@@ -28,48 +28,42 @@ trait ThirdParty {
 	 *
 	 * @since 4.0.0
 	 *
-	 * @param  int         $postId The post ID.
-	 * @return string|bool         The type of page or false if it isn't a WooCommerce page.
+	 * @param  int    $postId The post ID.
+	 * @return string         The type of page or an empty string if it isn't a WooCommerce page.
 	 */
 	public function isWooCommercePage( $postId = 0 ) {
+		$postId                  = $postId ? (int) $postId : get_the_ID();
+		$specialWooCommercePages = $this->getWooCommercePages();
+
+		if ( in_array( $postId, $specialWooCommercePages, true ) ) {
+			return array_search( $postId, $specialWooCommercePages, true );
+		}
+
+		return '';
+	}
+
+	/**
+	 * Returns the WooCommerce pages.
+	 *
+	 * @since 4.7.3
+	 *
+	 * @return array An associative list of special WooCommerce pages.
+	 */
+	public function getWooCommercePages() {
 		if ( ! $this->isWooCommerceActive() ) {
-			return false;
+			$wooCommercePages = [];
+
+			return $wooCommercePages;
 		}
 
-		$postId = $postId ? $postId : get_the_ID();
+		$wooCommercePages = [
+			'cart'      => (int) get_option( 'woocommerce_cart_page_id' ),
+			'checkout'  => (int) get_option( 'woocommerce_checkout_page_id' ),
+			'myAccount' => (int) get_option( 'woocommerce_myaccount_page_id' ),
+			'terms'     => (int) get_option( 'woocommerce_terms_page_id' ),
+		];
 
-		static $cartPageId;
-		if ( ! $cartPageId ) {
-			$cartPageId = (int) get_option( 'woocommerce_cart_page_id' );
-		}
-
-		static $checkoutPageId;
-		if ( ! $checkoutPageId ) {
-			$checkoutPageId = (int) get_option( 'woocommerce_checkout_page_id' );
-		}
-
-		static $myAccountPageId;
-		if ( ! $myAccountPageId ) {
-			$myAccountPageId = (int) get_option( 'woocommerce_myaccount_page_id' );
-		}
-
-		static $termsPageId;
-		if ( ! $termsPageId ) {
-			$termsPageId = (int) get_option( 'woocommerce_terms_page_id' );
-		}
-
-		switch ( $postId ) {
-			case $cartPageId:
-				return 'cart';
-			case $checkoutPageId:
-				return 'checkout';
-			case $myAccountPageId:
-				return 'myAccount';
-			case $termsPageId:
-				return 'terms';
-			default:
-				return false;
-		}
+		return $wooCommercePages;
 	}
 
 	/**
@@ -104,11 +98,24 @@ trait ThirdParty {
 			return false;
 		}
 
-		if ( ! is_admin() && ! aioseo()->helpers->isAjaxCronRestRequest() && function_exists( 'is_shop' ) ) {
+		// If the id is empty, we want to check against the queried object.
+		if (
+			empty( $id ) &&
+			function_exists( 'is_shop' ) &&
+			! is_admin() &&
+			! aioseo()->helpers->isAjaxCronRestRequest()
+		) {
 			return is_shop();
 		}
 
-		$id = ! $id && ! empty( $_GET['post'] ) ? (int) wp_unslash( $_GET['post'] ) : (int) $id; // phpcs:ignore HM.Security.ValidatedSanitizedInput, HM.Security.NonceVerification.Recommended
+		// Prevent non-numeric id.
+		$id = is_numeric( $id ) ? (int) $id : 0;
+
+		// phpcs:disable HM.Security.ValidatedSanitizedInput, HM.Security.NonceVerification.Recommended, WordPress.Security.NonceVerification.Recommended
+		$id = ! $id && ! empty( $_GET['post'] )
+			? (int) sanitize_text_field( wp_unslash( $_GET['post'] ) )
+			: $id;
+		// phpcs:enable
 
 		return $id && wc_get_page_id( 'shop' ) === $id;
 	}
@@ -130,7 +137,11 @@ trait ThirdParty {
 			return is_cart();
 		}
 
-		$id = ! $id && ! empty( $_GET['post'] ) ? (int) wp_unslash( $_GET['post'] ) : (int) $id; // phpcs:ignore HM.Security.ValidatedSanitizedInput, HM.Security.NonceVerification.Recommended
+		// phpcs:disable HM.Security.ValidatedSanitizedInput, HM.Security.NonceVerification.Recommended, WordPress.Security.NonceVerification.Recommended
+		$id = ! $id && ! empty( $_GET['post'] )
+			? (int) sanitize_text_field( wp_unslash( $_GET['post'] ) )
+			: (int) $id;
+		// phpcs:enable
 
 		return $id && wc_get_page_id( 'cart' ) === $id;
 	}
@@ -152,7 +163,11 @@ trait ThirdParty {
 			return is_checkout();
 		}
 
-		$id = ! $id && ! empty( $_GET['post'] ) ? (int) wp_unslash( $_GET['post'] ) : (int) $id; // phpcs:ignore HM.Security.ValidatedSanitizedInput, HM.Security.NonceVerification.Recommended
+		// phpcs:disable HM.Security.ValidatedSanitizedInput, HM.Security.NonceVerification.Recommended, WordPress.Security.NonceVerification.Recommended
+		$id = ! $id && ! empty( $_GET['post'] )
+			? (int) sanitize_text_field( wp_unslash( $_GET['post'] ) )
+			: (int) $id;
+		// phpcs:enable
 
 		return $id && wc_get_page_id( 'checkout' ) === $id;
 	}
@@ -174,7 +189,11 @@ trait ThirdParty {
 			return is_account_page();
 		}
 
-		$id = ! $id && ! empty( $_GET['post'] ) ? (int) wp_unslash( $_GET['post'] ) : (int) $id; // phpcs:ignore HM.Security.ValidatedSanitizedInput, HM.Security.NonceVerification.Recommended
+		// phpcs:disable HM.Security.ValidatedSanitizedInput, HM.Security.NonceVerification.Recommended, WordPress.Security.NonceVerification.Recommended
+		$id = ! $id && ! empty( $_GET['post'] )
+			? (int) sanitize_text_field( wp_unslash( $_GET['post'] ) )
+			: (int) $id;
+		// phpcs:enable
 
 		return $id && wc_get_page_id( 'myaccount' ) === $id;
 	}
@@ -255,6 +274,17 @@ trait ThirdParty {
 	}
 
 	/**
+	 * Checks if TranslatePress is active.
+	 *
+	 * @since 4.7.3
+	 *
+	 * @return bool True if it is, false if not.
+	 */
+	public function isTranslatePressActive() {
+		return class_exists( 'TRP_Translate_Press' );
+	}
+
+	/**
 	 * Localizes a given URL.
 	 *
 	 * This is required for compatibility with WPML.
@@ -268,12 +298,12 @@ trait ThirdParty {
 		$url = apply_filters( 'wpml_home_url', home_url( '/' ) );
 
 		// Remove URL parameters.
-		preg_match_all( '/\?[\s\S]+/', $url, $matches );
+		preg_match_all( '/\?[\s\S]+/', (string) $url, $matches );
 
 		// Get the base URL.
-		$url  = preg_replace( '/\?[\s\S]+/', '', $url );
+		$url  = preg_replace( '/\?[\s\S]+/', '', (string) $url );
 		$url  = trailingslashit( $url );
-		$url .= preg_replace( '/\//', '', $path, 1 );
+		$url .= preg_replace( '/\//', '', (string) $path, 1 );
 
 		// Readd URL parameters.
 		if ( $matches && $matches[0] ) {
@@ -314,37 +344,30 @@ trait ThirdParty {
 	 * @return bool         If the page is a BuddyPress page or not.
 	 */
 	public function isBuddyPressPage( $postId = 0 ) {
-		$bpPages = get_option( 'bp-pages' );
+		$bpPageIds = $this->getBuddyPressPageIds();
 
-		if ( empty( $bpPages ) ) {
-			return false;
-		}
-
-		foreach ( $bpPages as $page ) {
-			if ( (int) $page === (int) $postId ) {
-				return true;
-			}
-		}
-
-		return false;
+		return in_array( $postId, $bpPageIds, true );
 	}
 
 	/**
-	 * Check if is a BBpress post type.
+	 * Returns the BuddyPress pages.
 	 *
-	 * @since 4.2.8
+	 * @since 4.7.3
 	 *
-	 * @param  string $postType The post type to check.
-	 * @return bool             Whether this is a bbPress post type.
+	 * @return array A list of BuddyPress page IDs.
 	 */
-	public function isBBPressPostType( $postType ) {
-		if ( ! class_exists( 'bbPress' ) ) {
-			return false;
+	public function getBuddyPressPageIds() {
+		if ( ! $this->isBuddyPressActive() ) {
+			return [];
 		}
 
-		$bbPressPostTypes = [ 'forum', 'topic', 'reply' ];
+		static $bpPageIds = null;
+		if ( null === $bpPageIds ) {
+			$bpPageIds = (array) get_option( 'bp-pages' );
+			$bpPageIds = array_map( 'intval', $bpPageIds );
+		}
 
-		return in_array( $postType, $bbPressPostTypes, true );
+		return $bpPageIds;
 	}
 
 	/**
@@ -377,7 +400,6 @@ trait ThirdParty {
 			'image',
 			'gallery',
 			'link',
-			// 'taxonomy',
 		];
 
 		$types        = wp_parse_args( $types, $allowedTypes );
@@ -404,7 +426,7 @@ trait ThirdParty {
 					$imageUrl = is_array( $field['value'] ) ? $field['value']['url'] : $field['value'];
 					$imageUrl = is_numeric( $imageUrl ) ? wp_get_attachment_image_url( $imageUrl ) : $imageUrl;
 
-					$value = "<img src='$imageUrl' />";
+					$value = "<img src='$imageUrl' />"; // phpcs:ignore PluginCheck.CodeAnalysis.ImageFunctions.NonEnqueuedImage
 					break;
 				case 'gallery':
 					$imageUrl = $field['value'];
@@ -421,7 +443,7 @@ trait ThirdParty {
 					// Image ID format.
 					$imageUrl = is_numeric( $imageUrl ) ? wp_get_attachment_image_url( $imageUrl ) : $imageUrl;
 
-					$value = ! empty( $imageUrl ) ? "<img src='{$imageUrl}' />" : '';
+					$value = ! empty( $imageUrl ) ? "<img src='{$imageUrl}' />" : ''; // phpcs:ignore PluginCheck.CodeAnalysis.ImageFunctions.NonEnqueuedImage
 					break;
 				case 'link':
 					$value = make_clickable( $field['value']['url'] ?? $field['value'] ?? '' );
@@ -437,6 +459,58 @@ trait ThirdParty {
 		}
 
 		return $acfFields;
+	}
+
+	/**
+	 * Retrieves the ACF Flexible Content field value for a given post.
+	 *
+	 * @since 4.7.9
+	 *
+	 * @param  string     $name The name of the field.
+	 * @param  int|object $post The post ID or object.
+	 * @return string           The field value.
+	 */
+	public function getAcfFlexibleContentField( $name, $post ) {
+		$output = '';
+		if ( ! function_exists( 'acf_get_raw_field' ) || ! function_exists( 'acf_get_field' ) ) {
+			return $output;
+		}
+
+		$parentTrace = [];
+		$field       = acf_get_raw_field( $name ) ?? [];
+		while ( ! empty( $field['parent'] ) && ! empty( $field['parent_layout'] ) ) {
+			$parentField   = acf_get_field( $field['parent'] );
+			$parentTrace[] = $parentField['name'] ?? '';
+			$field         = $parentField;
+		}
+
+		$parentTrace = array_filter( $parentTrace );
+		if ( empty( $parentTrace ) ) {
+			return $output;
+		}
+
+		$parentTrace        = array_reverse( $parentTrace );
+		$parentName         = array_shift( $parentTrace );
+		$highestParentField = get_field( $parentName, $post );
+
+		for ( $i = 0; $i <= count( $parentTrace ); $i++ ) {
+			$values = array_filter( array_column( $highestParentField, $name ), 'is_scalar' );
+			if ( $values ) {
+				return implode( ' ', $values );
+			}
+
+			$highestParentField = $highestParentField[0] ?? '';
+			if (
+				! is_array( $highestParentField ) ||
+				! isset( $parentTrace[ $i ] )
+			) {
+				break;
+			}
+
+			$highestParentField = $highestParentField[ $parentTrace[ $i ] ];
+		}
+
+		return $output;
 	}
 
 	/**
@@ -591,6 +665,23 @@ trait ThirdParty {
 	}
 
 	/**
+	 * Returns the TranslatePress slugs code and slug.
+	 *
+	 * @since 4.7.3
+	 *
+	 * @return array The slugs.
+	 */
+	public function getTranslatePressUrlSlugs() {
+		if ( ! $this->isTranslatePressActive() ) {
+			return [];
+		}
+
+		$settings = maybe_unserialize( get_option( 'trp_settings', [] ) );
+
+		return isset( $settings['url-slugs'] ) ? $settings['url-slugs'] : [];
+	}
+
+	/**
 	 * Checks whether the WooCommerce Follow Up Emails plugin is active.
 	 *
 	 * @since 4.2.2
@@ -651,7 +742,7 @@ trait ThirdParty {
 		}
 
 		// AMP plugin requires the `wp` action to be called to function properly, otherwise, it will throw warnings.
-		// https://github.com/awesomemotive/aioseo/issues/6056
+
 		if ( did_action( 'wp' ) ) {
 			// Check for the "AMP" plugin.
 			if ( function_exists( 'amp_is_request' ) ) {
@@ -685,10 +776,12 @@ trait ThirdParty {
 	 * @return int|false
 	 */
 	public function getLearnPressLesson() {
+		// phpcs:disable Squiz.NamingConventions.ValidVariableName
 		global $lp_course_item;
 		if ( $lp_course_item && method_exists( $lp_course_item, 'get_id' ) ) {
 			return $lp_course_item->get_id();
 		}
+		// phpcs:enable Squiz.NamingConventions.ValidVariableName
 
 		return false;
 	}
@@ -705,11 +798,12 @@ trait ThirdParty {
 		if ( ! defined( 'ET_BUILDER_VERSION' ) ) {
 			return null;
 		}
-
+		// phpcs:disable Squiz.NamingConventions.ValidVariableName
 		global $et_pb_rendering_column_content;
 
 		$originalValue                  = $et_pb_rendering_column_content;
 		$et_pb_rendering_column_content = $flag;
+		// phpcs:enable Squiz.NamingConventions.ValidVariableName
 
 		return $originalValue;
 	}
@@ -726,6 +820,52 @@ trait ThirdParty {
 			return false;
 		}
 
-		return preg_match( '#.*Yandex.*#', $_SERVER['HTTP_USER_AGENT'] );
+		return preg_match( '#.*Yandex.*#', (string) sanitize_text_field( wp_unslash( $_SERVER['HTTP_USER_AGENT'] ) ) );
+	}
+
+	/**
+	 * Checks whether the taxonomy is a WooCommerce product attribute.
+	 *
+	 * @since 4.7.8
+	 *
+	 * @param  mixed $taxonomy The taxonomy.
+	 * @return bool            Whether the taxonomy is a WooCommerce product attribute.
+	 */
+	public function isWooCommerceProductAttribute( $taxonomy ) {
+		$name = is_object( $taxonomy )
+			? $taxonomy->name
+			: (
+				is_array( $taxonomy )
+					? $taxonomy['name']
+					: $taxonomy
+			);
+
+		return ! empty( $name ) && 'pa_' === substr( $name, 0, 3 );
+	}
+
+	/**
+	 * Returns whether a plugin is active or not using abstraction.
+	 *
+	 * @since 4.8.1
+	 *
+	 * @param  string $slug The plugin slug.
+	 * @return bool         Whether the plugin is active.
+	 */
+	public function isPluginActive( $slug ) {
+		$mapped = [
+			'buddypress' => 'buddypress/bp-loader.php',
+			'bbpress'    => 'bbpress/bbpress.php',
+			'weglot'     => 'weglot/weglot.php'
+		];
+
+		static $output = [];
+		if ( isset( $output[ $slug ] ) ) {
+			return $output[ $slug ];
+		}
+
+		$mapped[ $slug ] = $mapped[ $slug ] ?? $slug;
+		$output[ $slug ] = function_exists( 'is_plugin_active' ) && is_plugin_active( $mapped[ $slug ] );
+
+		return $output[ $slug ];
 	}
 }

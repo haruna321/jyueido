@@ -154,7 +154,7 @@ class TitleMeta extends ImportExport\SearchAppearance {
 			}
 
 			if ( ! empty( $this->options[ "{$archive}_advanced_robots" ] ) ) {
-				if ( ! empty( $this->options[ "{$archive}_advanced_robots" ]['max-snippet'] ) ) {
+				if ( isset( $this->options[ "{$archive}_advanced_robots" ]['max-snippet'] ) && is_numeric( $this->options[ "{$archive}_advanced_robots" ]['max-snippet'] ) ) {
 					aioseo()->options->searchAppearance->archives->$archive->advanced->robotsMeta->maxSnippet = intval( $this->options[ "{$archive}_advanced_robots" ]['max-snippet'] );
 				}
 				if ( isset( $this->options[ "{$archive}_advanced_robots" ]['max-video-preview'] ) && is_numeric( isset( $this->options[ "{$archive}_advanced_robots" ]['max-video-preview'] ) ) ) {
@@ -206,7 +206,7 @@ class TitleMeta extends ImportExport\SearchAppearance {
 			}
 
 			foreach ( $this->options as $name => $value ) {
-				if ( ! preg_match( "#^pt_{$postType}_(.*)$#", $name, $match ) || ! in_array( $match[1], $supportedSettings, true ) ) {
+				if ( ! preg_match( "#^pt_{$postType}_(.*)$#", (string) $name, $match ) || ! in_array( $match[1], $supportedSettings, true ) ) {
 					continue;
 				}
 
@@ -246,7 +246,7 @@ class TitleMeta extends ImportExport\SearchAppearance {
 						}
 						break;
 					case 'advanced_robots':
-						if ( ! empty( $value['max-snippet'] ) ) {
+						if ( isset( $value['max-snippet'] ) && is_numeric( $value['max-snippet'] ) ) {
 							aioseo()->dynamicOptions->searchAppearance->postTypes->$postType->advanced->robotsMeta->maxSnippet = intval( $value['max-snippet'] );
 						}
 						if ( isset( $value['max-video-preview'] ) && is_numeric( $value['max-video-preview'] ) ) {
@@ -303,7 +303,7 @@ class TitleMeta extends ImportExport\SearchAppearance {
 
 		foreach ( aioseo()->helpers->getPublicPostTypes( true, true ) as $postType ) {
 			foreach ( $this->options as $name => $value ) {
-				if ( ! preg_match( "#^pt_{$postType}_archive_(.*)$#", $name, $match ) || ! in_array( $match[1], $supportedSettings, true ) ) {
+				if ( ! preg_match( "#^pt_{$postType}_archive_(.*)$#", (string) $name, $match ) || ! in_array( $match[1], $supportedSettings, true ) ) {
 					continue;
 				}
 
@@ -350,7 +350,7 @@ class TitleMeta extends ImportExport\SearchAppearance {
 		if ( ! empty( $this->options['advanced_robots_global'] ) ) {
 			aioseo()->options->searchAppearance->advanced->globalRobotsMeta->default = false;
 
-			if ( ! empty( $this->options['robots_global']['max-snippet'] ) ) {
+			if ( isset( $this->options['robots_global']['max-snippet'] ) && is_numeric( $this->options['robots_global']['max-snippet'] ) ) {
 				aioseo()->options->searchAppearance->advanced->globalRobotsMeta->maxSnippet = intval( $this->options['robots_global']['max-snippet'] );
 			}
 			if ( isset( $this->options['robots_global']['max-video-preview'] ) && is_numeric( $this->options['robots_global']['max-video-preview'] ) ) {
@@ -413,7 +413,7 @@ class TitleMeta extends ImportExport\SearchAppearance {
 		}
 
 		$phoneNumber = aioseo()->helpers->sanitizeOption( $this->options['phone'] );
-		if ( ! preg_match( '#\+\d+#', $phoneNumber ) ) {
+		if ( ! preg_match( '#\+\d+#', (string) $phoneNumber ) ) {
 			$notification = Models\Notification::getNotificationByName( 'v3-migration-schema-number' );
 			if ( $notification->notification_name ) {
 				return;

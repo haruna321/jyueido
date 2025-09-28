@@ -189,7 +189,10 @@ class Helpers {
 		$memory    = $this->performance['memory'];
 		$type      = aioseo()->sitemap->type;
 		$indexName = aioseo()->sitemap->indexName;
+
+		// phpcs:disable WordPress.PHP.DevelopmentFunctions
 		error_log( wp_json_encode( "$indexName index of $type sitemap generated in $time seconds using a maximum of $memory mb of memory." ) );
+		// phpcs:enable WordPress.PHP.DevelopmentFunctions
 	}
 
 	/**
@@ -201,7 +204,6 @@ class Helpers {
 	 * @return array   $postTypes       The included post types.
 	 */
 	public function includedPostTypes( $hasArchivesOnly = false ) {
-		$postTypes = [];
 		if ( aioseo()->options->sitemap->{aioseo()->sitemap->type}->postTypes->all ) {
 			$postTypes = aioseo()->helpers->getPublicPostTypes( true, $hasArchivesOnly );
 		} else {
@@ -237,7 +239,6 @@ class Helpers {
 			) {
 				if ( ! $this->checkForIndexedPost( $postType ) ) {
 					$postTypes = aioseo()->helpers->unsetValue( $postTypes, $postType );
-					continue;
 				}
 			}
 		}
@@ -295,6 +296,17 @@ class Helpers {
 		$dynamicOptions   = aioseo()->dynamicOptions->noConflict();
 		$publicTaxonomies = aioseo()->helpers->getPublicTaxonomies( true );
 		foreach ( $taxonomies as $taxonomy ) {
+			if (
+				aioseo()->helpers->isWooCommerceActive() &&
+				aioseo()->helpers->isWooCommerceProductAttribute( $taxonomy )
+			) {
+				$taxonomies = aioseo()->helpers->unsetValue( $taxonomies, $taxonomy );
+				if ( ! in_array( 'product_attributes', $taxonomies, true ) ) {
+					$taxonomies[] = 'product_attributes';
+				}
+				continue;
+			}
+
 			// Check if taxonomy is no longer registered.
 			if ( ! in_array( $taxonomy, $publicTaxonomies, true ) || ! $dynamicOptions->searchAppearance->taxonomies->has( $taxonomy ) ) {
 				$taxonomies = aioseo()->helpers->unsetValue( $taxonomies, $taxonomy );
@@ -341,7 +353,7 @@ class Helpers {
 	 * @return string       The formatted datetime.
 	 */
 	public function lastModifiedAdditionalPage( $page ) {
-		return gmdate( 'c', strtotime( $page->lastModified ) );
+		return aioseo()->helpers->isValidDate( $page->lastModified ) ? gmdate( 'c', strtotime( $page->lastModified ) ) : '';
 	}
 
 	/**
@@ -352,7 +364,12 @@ class Helpers {
 	 * @return string The excluded IDs.
 	 */
 	public function excludedPosts() {
-		return $this->excludedObjectIds( 'excludePosts' );
+		static $excludedPosts = null;
+		if ( null === $excludedPosts ) {
+			$excludedPosts = $this->excludedObjectIds( 'excludePosts' );
+		}
+
+		return $excludedPosts;
 	}
 
 	/**
@@ -363,7 +380,12 @@ class Helpers {
 	 * @return string The excluded IDs.
 	 */
 	public function excludedTerms() {
-		return $this->excludedObjectIds( 'excludeTerms' );
+		static $excludedTerms = null;
+		if ( null === $excludedTerms ) {
+			$excludedTerms = $this->excludedObjectIds( 'excludeTerms' );
+		}
+
+		return $excludedTerms;
 	}
 
 	/**
@@ -379,6 +401,11 @@ class Helpers {
 	 */
 	private function excludedObjectIds( $option ) {
 		$type = aioseo()->sitemap->type;
+
+		if ( 'llms' === $type ) {
+			return '';
+		}
+
 		// The RSS Sitemap needs to exclude whatever is excluded in the general sitemap.
 		if ( 'rss' === $type ) {
 			$type = 'general';
@@ -584,5 +611,36 @@ class Helpers {
 		$postTypes = [ 'post' ];
 
 		return apply_filters( 'aioseo_sitemap_author_post_types', $postTypes );
+	}
+
+	/**
+	 * Decode the Urls from Posts and Terms so they properly show in the Sitemap.
+	 *
+	 * @since 4.6.9
+	 *
+	 * @param  mixed $data   The data to decode.
+	 * @return array $result The converted data with decoded URLs.
+	 */
+	public function decodeSitemapEntries( $data ) {
+		$result = [];
+
+		if ( empty( $data ) ) {
+			return $result;
+		}
+
+		// Decode Url to properly show Unicode Characters.
+		foreach ( $data as $item ) {
+			if ( isset( $item['loc'] ) ) {
+				$item['loc'] = aioseo()->helpers->decodeUrl( $item['loc'] );
+			}
+			// This is for the RSS Sitemap.
+			if ( isset( $item['guid'] ) ) {
+				$item['guid'] = aioseo()->helpers->decodeUrl( $item['guid'] );
+			}
+
+			$result[] = $item;
+		}
+
+		return $result;
 	}
 }
